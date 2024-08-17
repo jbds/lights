@@ -5,25 +5,27 @@ use crate::central_panel;
 //#[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TemplateApp {
     // Example stuff:
-    label: String,
+    _label: String,
 
     //#[serde(skip)] // This how you opt-out of serialization of a field
-    pub value: f32, //made this public
+    pub value: f32,      //made this public
+    pub values: Vec<u8>, //stores the current array of light valuyes
 }
 
 impl Default for TemplateApp {
     fn default() -> Self {
         Self {
             // Example stuff:
-            label: "Hello World!".to_owned(),
+            _label: "Hello World!".to_owned(),
             value: 2.7,
+            values: vec![0; 20],
         }
     }
 }
 
 impl TemplateApp {
     /// Called once before the first frame.
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         // This is also where you can customize the look and feel of egui using
         // `cc.egui_ctx.set_visuals` and `cc.egui_ctx.set_fonts`.
 
@@ -39,7 +41,7 @@ impl TemplateApp {
 
 impl eframe::App for TemplateApp {
     /// Called by the frame work to save state before shutdown.
-    fn save(&mut self, storage: &mut dyn eframe::Storage) {
+    fn save(&mut self, _storage: &mut dyn eframe::Storage) {
         // TURN THIS OFF - we want our own light state
         //eframe::set_value(storage, eframe::APP_KEY, self);
     }
@@ -71,6 +73,7 @@ impl eframe::App for TemplateApp {
         });
 
         egui::SidePanel::right("rhs_panel")
+            .show_separator_line(false)
             .min_width(20.0)
             .show(ctx, |ui| {
                 //ui.label("MM");

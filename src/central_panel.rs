@@ -4,7 +4,7 @@ pub fn get_closure(
     template_app: &mut TemplateApp,
 ) -> impl FnOnce(&mut egui::Ui) -> egui::Response + '_ {
     |ui| {
-        ui.heading("jonb b811111111111bb sales@jbds.co.uk");
+        //ui.heading("jonb b811111111111bb sales@jbds.co.uk");
 
         let mut count: i32 = 0;
         ui.horizontal(|ui| {

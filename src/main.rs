@@ -5,13 +5,15 @@ fn main() -> eframe::Result {
 
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
+            // buggy, have to set min_inner_size
             .with_inner_size([1300.0, 700.0])
-            .with_min_inner_size([300.0, 220.0])
-            .with_icon(
-                // NOTE: Adding an icon is optional
-                eframe::icon_data::from_png_bytes(&include_bytes!("../assets/icon-256.png")[..])
-                    .expect("Failed to load icon"),
-            ),
+            .with_min_inner_size([1300.0, 700.0])
+            .with_max_inner_size([1302.0, 702.0]),
+        // .with_icon(
+        //     // NOTE: Adding an icon is optional
+        //     eframe::icon_data::from_png_bytes(&include_bytes!("../assets/icon-256.png")[..])
+        //         .expect("Failed to load icon"),
+        // ),
         ..Default::default()
     };
     eframe::run_native(
