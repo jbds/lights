@@ -75,7 +75,8 @@ impl eframe::App for TemplateApp {
 
         egui::SidePanel::right("rhs_panel")
             .show_separator_line(false)
-            .min_width(20.0)
+            .min_width(70.0)
+            .resizable(false)
             .show(ctx, |ui| {
                 //ui.label("MM");
                 // set the 'width' (height) of the slider

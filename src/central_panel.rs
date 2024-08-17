@@ -8,6 +8,8 @@ pub fn get_closure(
 
         let mut count: usize = 0;
         ui.horizontal(|ui| {
+            // lhs margin
+            ui.label("                      ");
             // set the 'width' (height) of the slider
             ui.spacing_mut().slider_width = 300.0;
             while count != 20 {
