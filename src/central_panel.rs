@@ -6,7 +6,7 @@ pub fn get_closure(
     |ui| {
         //ui.heading("jonb b811111111111bb sales@jbds.co.uk");
 
-        let mut count: i32 = 0;
+        let mut count: usize = 0;
         ui.horizontal(|ui| {
             // set the 'width' (height) of the slider
             ui.spacing_mut().slider_width = 300.0;
@@ -26,12 +26,12 @@ pub fn get_closure(
     }
 }
 
-fn get_slider(ui: &mut egui::Ui, template_app: &mut TemplateApp, count: i32) -> egui::Response {
+fn get_slider(ui: &mut egui::Ui, template_app: &mut TemplateApp, count: usize) -> egui::Response {
     if count % 4 == 0 && count < 16 && count > 0 {
         ui.label("               ");
     }
     ui.add(
-        egui::Slider::new(&mut template_app.value, 0.0..=255.0)
+        egui::Slider::new(&mut template_app.values[count], 0..=255)
             .integer()
             .text(format!("ch{}", count + 1))
             .orientation(egui::SliderOrientation::Vertical),

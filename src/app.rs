@@ -69,6 +69,7 @@ impl eframe::App for TemplateApp {
                     "{:?}",
                     ctx.input(|i: &egui::InputState| i.screen_rect())
                 ));
+                ui.label(format!("{:?}", self.values));
             });
         });
 
