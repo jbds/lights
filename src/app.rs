@@ -1,13 +1,13 @@
 use crate::central_panel;
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
-#[derive(serde::Deserialize, serde::Serialize)]
-#[serde(default)] // if we add new fields, give them default values when deserializing old state
+//#[derive(serde::Deserialize, serde::Serialize)]
+//#[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TemplateApp {
     // Example stuff:
     label: String,
 
-    #[serde(skip)] // This how you opt-out of serialization of a field
+    //#[serde(skip)] // This how you opt-out of serialization of a field
     pub value: f32, //made this public
 }
 
@@ -29,9 +29,9 @@ impl TemplateApp {
 
         // Load previous app state (if any).
         // Note that you must enable the `persistence` feature for this to work.
-        if let Some(storage) = cc.storage {
-            return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
-        }
+        // if let Some(storage) = cc.storage {
+        //     return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
+        // }
 
         Default::default()
     }
@@ -40,7 +40,8 @@ impl TemplateApp {
 impl eframe::App for TemplateApp {
     /// Called by the frame work to save state before shutdown.
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        eframe::set_value(storage, eframe::APP_KEY, self);
+        // TURN THIS OFF - we want our own light state
+        //eframe::set_value(storage, eframe::APP_KEY, self);
     }
 
     /// Called each time the UI needs repainting, which may be many times per second.
@@ -52,71 +53,38 @@ impl eframe::App for TemplateApp {
             // The top panel is often a good place for a menu bar:
 
             egui::menu::bar(ui, |ui| {
-                // NOTE: no File->Quit on web pages!
-                let is_web = cfg!(target_arch = "wasm32");
-                if !is_web {
-                    ui.menu_button("File", |ui| {
-                        if ui.button("Quit").clicked() {
-                            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-                        }
-                    });
-                    ui.add_space(16.0);
-                }
+                ui.menu_button("File", |ui| {
+                    if ui.button("Quit").clicked() {
+                        ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                    }
+                });
+                ui.add_space(16.0);
 
                 egui::widgets::global_dark_light_mode_buttons(ui);
+
+                ui.add_space(16.0);
+                ui.label(format!(
+                    "{:?}",
+                    ctx.input(|i: &egui::InputState| i.screen_rect())
+                ));
             });
         });
 
-        // egui::CentralPanel::default().show(ctx, |ui| {
-        //     // The central panel the region left after adding TopPanel's and SidePanel's
-        //     ui.heading("eframe template");
-
-        //     ui.horizontal(|ui| {
-        //         ui.label("Write something: ");
-        //         ui.text_edit_singleline(&mut self.label);
-        //     });
-
-        //     ui.add(
-        //         egui::Slider::new(&mut self.value, 0.0..=10.0)
-        //             .text("value")
-        //             .orientation(egui::SliderOrientation::Vertical),
-        //     );
-        //     if ui.button("Increment").clicked() {
-        //         self.value += 1.0;
-        //     }
-
-        //     ui.separator();
-
-        //     ui.add(egui::github_link_file!(
-        //         "https://github.com/emilk/eframe_template/blob/main/",
-        //         "Source code."
-        //     ));
-
-        //     ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-        //         //powered_by::powered_by_egui_and_eframe(ui);
-        //         //egui::warn_if_debug_build(ui);
-        //     });
-        // });
-
-        // egui::CentralPanel::default().show(ctx, |ui| {
-        //     ui.heading("jonb sales@jbds.co.uk");
-        // });
+        egui::SidePanel::right("rhs_panel")
+            .min_width(20.0)
+            .show(ctx, |ui| {
+                //ui.label("MM");
+                // set the 'width' (height) of the slider
+                ui.spacing_mut().slider_width = 600.0;
+                ui.add(
+                    egui::Slider::new(&mut self.value, 0.0..=255.0)
+                        .integer()
+                        .text("Master")
+                        .orientation(egui::SliderOrientation::Vertical),
+                )
+            });
 
         //let my_closure = |ui: &mut egui::Ui| ui.heading("jonb zzzzz sales@jbds.co.uk");
         egui::CentralPanel::default().show(ctx, central_panel::get_closure(self));
     }
-}
-
-fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
-    ui.horizontal(|ui| {
-        ui.spacing_mut().item_spacing.x = 0.0;
-        ui.label("Powered by ");
-        ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-        ui.label(" and ");
-        ui.hyperlink_to(
-            "eframe",
-            "https://github.com/emilk/egui/tree/master/crates/eframe",
-        );
-        ui.label(".");
-    });
 }
