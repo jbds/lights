@@ -14,7 +14,7 @@ pub struct TemplateApp {
     pub values: Vec<u8>,                      //stores the current array of light values
     pub instant: Instant,                     // we need this to check timing
     pub duration: Duration,                   // ditto
-    pub dmx_port: dmx_serial::posix::TTYPort, // valid for life of the app
+    pub dmx_port: dmx_serial::posix::TTYPort, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
 }
 
 impl Default for TemplateApp {
@@ -64,6 +64,9 @@ impl eframe::App for TemplateApp {
 
             egui::menu::bar(ui, |ui| {
                 ui.menu_button("File", |ui| {
+                    if ui.button("Shrink").clicked() {
+                        ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
+                    }
                     if ui.button("Quit").clicked() {
                         ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                     }
@@ -108,7 +111,7 @@ impl eframe::App for TemplateApp {
         if (self.instant.elapsed() - self.duration) > Duration::from_millis(50) {
             println!(">50 ms elapsed since last repaint");
             // send a dmx packet, &Vec<u8> can be coerced to &[u8]
-            self.dmx_port.send_dmx_packet(&self.values).unwrap();
+            let _ = self.dmx_port.send_dmx_packet(&self.values);
             self.duration = self.instant.elapsed();
         } else {
             // leave duration as is to accumulate time
