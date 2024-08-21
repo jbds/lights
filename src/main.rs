@@ -1,12 +1,6 @@
 #![warn(clippy::all, rust_2018_idioms)]
-mod dmx_send;
-use std::{sync, thread, time};
 
 fn main() -> eframe::Result {
-    let (tx, rx) = sync::mpsc::channel::<Vec<u8>>();
-
-    dmx_send::spawn_receiver(rx);
-
     env_logger::init(); // Log to stderr (if you run with `RUST_LOG=debug`).
 
     let native_options = eframe::NativeOptions {
@@ -17,6 +11,7 @@ fn main() -> eframe::Result {
             .with_max_inner_size([1302.0, 702.0]),
         ..Default::default()
     };
+
     eframe::run_native(
         "lights",
         native_options,

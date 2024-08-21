@@ -985,6 +985,7 @@ name = "lights"
 version = "0.1.0"
 dependencies = [
  "dmx",
+ "dmx-serial",
  "eframe",
  "egui",
  "env_logger",

@@ -25,6 +25,7 @@ serde = { version = "1", features = ["derive"] }
 
 # for serial port on raspi
 dmx = "0.2.1"
+dmx-serial = "0.4.0"
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

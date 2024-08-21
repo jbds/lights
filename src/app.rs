@@ -1,4 +1,6 @@
 use crate::central_panel;
+use dmx::{self, DmxTransmitter};
+use std::time::{Duration, Instant};
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 //#[derive(serde::Deserialize, serde::Serialize)]
@@ -8,8 +10,11 @@ pub struct TemplateApp {
     _label: String,
 
     //#[serde(skip)] // This how you opt-out of serialization of a field
-    pub value: f32,      //made this public
-    pub values: Vec<u8>, //stores the current array of light valuyes
+    pub value: f32,                           //made this public
+    pub values: Vec<u8>,                      //stores the current array of light values
+    pub instant: Instant,                     // we need this to check timing
+    pub duration: Duration,                   // ditto
+    pub dmx_port: dmx_serial::posix::TTYPort, // valid for life of the app
 }
 
 impl Default for TemplateApp {
@@ -19,6 +24,9 @@ impl Default for TemplateApp {
             _label: "Hello World!".to_owned(),
             value: 2.7,
             values: vec![0; 20],
+            instant: Instant::now(), // func is only called once, so this value will be fixed
+            duration: Duration::from_secs(0), // store elapsed time on each screen repaint
+            dmx_port: dmx::open_serial("/dev/serial0").unwrap(), // create the serial port
         }
     }
 }
@@ -91,5 +99,19 @@ impl eframe::App for TemplateApp {
 
         //let my_closure = |ui: &mut egui::Ui| ui.heading("jonb zzzzz sales@jbds.co.uk");
         egui::CentralPanel::default().show(ctx, central_panel::get_closure(self));
+
+        println!(
+            "{:?} time since last repaint",
+            self.instant.elapsed() - self.duration
+        );
+
+        if (self.instant.elapsed() - self.duration) > Duration::from_millis(50) {
+            println!(">50 ms elapsed since last repaint");
+            // send a dmx packet, &Vec<u8> can be coerced to &[u8]
+            self.dmx_port.send_dmx_packet(&self.values).unwrap();
+            self.duration = self.instant.elapsed();
+        } else {
+            // leave duration as is to accumulate time
+        }
     }
 }
