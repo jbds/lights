@@ -1,4 +1,4 @@
-use crate::utilities::recalculate_lights_dependent;
+use crate::utilities::recalculate_lights_adjusted;
 use crate::TemplateApp;
 
 pub fn get_closure(
@@ -16,7 +16,7 @@ pub fn get_closure(
             while count != 20 {
                 let resp = get_slider(ui, template_app, count);
                 if resp.changed() == true {
-                    recalculate_lights_dependent(template_app);
+                    recalculate_lights_adjusted(template_app);
                 }
                 count += 1;
             }
@@ -39,7 +39,7 @@ fn get_slider(ui: &mut egui::Ui, template_app: &mut TemplateApp, count: usize) -
     ui.add(
         egui::Slider::new(&mut template_app.values[count], 0..=255)
             .integer()
-            .text(format!("ch{}", count + 1))
+            .text(template_app.labels[count].clone())
             .orientation(egui::SliderOrientation::Vertical),
     )
 }

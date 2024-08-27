@@ -1,10 +1,17 @@
 use crate::central_panel;
-use crate::utilities::recalculate_lights_dependent;
+use crate::utilities::recalculate_lights_adjusted;
 use dmx::{self, DmxTransmitter};
 use egui::FontFamily::Proportional;
 use egui::FontId;
 use egui::TextStyle::*;
 use std::time::{Duration, Instant};
+
+// #[derive(Clone, Debug)]
+// pub struct Light {
+//     pub value: u8,
+//     pub is_master_adjusted: bool,
+//     pub label: String,
+// }
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 //#[derive(serde::Deserialize, serde::Serialize)]
@@ -15,8 +22,10 @@ pub struct TemplateApp {
 
     //#[serde(skip)] // This how you opt-out of serialization of a field
     pub value: f32,      //made this public
-    pub values: Vec<u8>, //stores the current array of light values
+    pub values: Vec<u8>, //Vec<u8>, //stores the current array of light values
     pub value_master: u8,
+    pub is_master_adjusteds: Vec<bool>,
+    pub labels: Vec<String>,
     pub values_adjusted: Vec<u8>,
     pub instant: Instant,                     // we need this to check timing
     pub duration: Duration,                   // ditto
@@ -27,7 +36,7 @@ fn configure_text_styles(ctx: &egui::Context) {
     let mut style = (*ctx.style()).clone();
     style.text_styles = [
         (Heading, FontId::new(30.0, Proportional)),
-        (Body, FontId::new(12.0, Proportional)),
+        (Body, FontId::new(14.0, Proportional)),
         (Monospace, FontId::new(18.0, Proportional)),
         (Button, FontId::new(18.0, Proportional)),
         (Small, FontId::new(18.0, Proportional)),
@@ -42,7 +51,34 @@ impl Default for TemplateApp {
             // Example stuff:
             _label: "Hello World!".to_owned(),
             value: 2.7,
+            // initialize 20 lights with 3 attributes each
             values: vec![0; 20],
+            is_master_adjusteds: vec![
+                true, true, true, true, true, true, true, true, true, true, true, true, false,
+                false, false, false, true, true, true, true,
+            ],
+            labels: vec![
+                "P 1".to_string(),
+                "P 2".to_string(),
+                "P 3".to_string(),
+                "P 4".to_string(),
+                "F Red".to_string(),
+                "F Grn".to_string(),
+                "F Blu".to_string(),
+                "F Wht".to_string(),
+                "W Red".to_string(),
+                "W Grn".to_string(),
+                "W Blu".to_string(),
+                "W Wht".to_string(),
+                "Pan".to_string(),
+                "Tilt".to_string(),
+                "Zoom".to_string(),
+                "Mstr".to_string(),
+                "Red".to_string(),
+                "Grn".to_string(),
+                "Blu".to_string(),
+                "Wht".to_string(),
+            ],
             value_master: 255,
             values_adjusted: vec![0; 20],
             instant: Instant::now(), // func is only called once, so this value will be fixed
@@ -124,7 +160,7 @@ impl eframe::App for TemplateApp {
                         .orientation(egui::SliderOrientation::Vertical),
                 );
                 if resp.changed() == true {
-                    recalculate_lights_dependent(self);
+                    recalculate_lights_adjusted(self);
                 }
             });
 
