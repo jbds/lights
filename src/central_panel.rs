@@ -1,3 +1,4 @@
+use crate::utilities::recalculate_lights_dependent;
 use crate::TemplateApp;
 
 pub fn get_closure(
@@ -13,7 +14,10 @@ pub fn get_closure(
             // set the 'width' (height) of the slider
             ui.spacing_mut().slider_width = 300.0;
             while count != 20 {
-                get_slider(ui, template_app, count);
+                let resp = get_slider(ui, template_app, count);
+                if resp.changed() == true {
+                    recalculate_lights_dependent(template_app);
+                }
                 count += 1;
             }
         });
