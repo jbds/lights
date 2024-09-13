@@ -27,8 +27,9 @@ pub struct TemplateApp {
     pub is_master_adjusteds: Vec<bool>,
     pub labels: Vec<String>,
     pub values_adjusted: Vec<u8>,
-    pub instant: Instant,                     // we need this to check timing
-    pub duration: Duration,                   // ditto
+    pub instant: Instant,   // we need this to check timing
+    pub duration: Duration, // ditto
+    #[cfg(target_arch = "aarch64")]
     pub dmx_port: dmx_serial::posix::TTYPort, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
 }
 
@@ -83,6 +84,7 @@ impl Default for TemplateApp {
             values_adjusted: vec![0; 20],
             instant: Instant::now(), // func is only called once, so this value will be fixed
             duration: Duration::from_secs(0), // store elapsed time on each screen repaint
+            #[cfg(target_arch = "aarch64")]
             dmx_port: dmx::open_serial("/dev/serial0").unwrap(), // create the serial port
         }
     }
@@ -167,14 +169,13 @@ impl eframe::App for TemplateApp {
         //let my_closure = |ui: &mut egui::Ui| ui.heading("jonb zzzzz sales@jbds.co.uk");
         egui::CentralPanel::default().show(ctx, central_panel::get_closure(self));
 
-        // println!(
-        //     "{:?} time since last repaint",
-        //     self.instant.elapsed() - self.duration
-        // );
-
         if (self.instant.elapsed() - self.duration) > Duration::from_millis(50) {
-            println!(">50 ms elapsed since last repaint");
+            println!(
+                ">50 ms elapsed since last repaint at {:?}",
+                &self.instant.elapsed()
+            );
             // send a dmx packet, &Vec<u8> can be coerced to &[u8]
+            #[cfg(target_arch = "aarch64")]
             let _ = self.dmx_port.send_dmx_packet(&self.values_adjusted);
             self.duration = self.instant.elapsed();
         } else {
