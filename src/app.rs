@@ -12,8 +12,8 @@ use std::time::{Duration, Instant};
 //#[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct LightsApp {
     //#[serde(skip)] // This how you opt-out of serialization of a field
-    pub values: Vec<u8>, //Vec<u8>, //stores the current array of light values
-    pub value_master: u8,
+    pub slider_count: usize,
+    pub values: Vec<u8>, //stores the current array of light values including master dimmer
     pub is_master_adjusteds: Vec<bool>,
     pub labels: Vec<String>,
     pub values_adjusted: Vec<u8>,
@@ -40,13 +40,17 @@ fn configure_text_styles(ctx: &egui::Context) {
 
 impl Default for LightsApp {
     fn default() -> Self {
+        let slider_count: usize = 21;
         Self {
-            // initialize 20 lights with 3 attributes each
-            values: vec![0; 20],
+            slider_count: slider_count,
+            // set all sliders to zero
+            values: vec![0; slider_count],
+            // make sure list has length equal to slider_count
             is_master_adjusteds: vec![
                 true, true, true, true, true, true, true, true, true, true, true, true, false,
-                false, false, false, true, true, true, true,
+                false, false, false, true, true, true, true, false,
             ],
+            // make sure list has length equal to slider_count
             labels: vec![
                 "P 1".to_string(),
                 "P 2".to_string(),
@@ -68,14 +72,18 @@ impl Default for LightsApp {
                 "Grn".to_string(),
                 "Blu".to_string(),
                 "Wht".to_string(),
+                "Master".to_string(),
             ],
-            value_master: 255,
-            values_adjusted: vec![0; 20],
+            values_adjusted: vec![0; slider_count],
             instant: Instant::now(), // func is only called once, so this value will be fixed
             duration: Duration::from_secs(0), // store elapsed time on each screen repaint
             #[cfg(target_arch = "aarch64")]
             dmx_port: dmx::open_serial("/dev/serial0").unwrap(), // create the serial port
-            light_records: vec![vec![0; 20], vec![128; 20], vec![255; 20]],
+            light_records: vec![
+                vec![0; slider_count],
+                vec![128; slider_count],
+                vec![255; slider_count],
+            ],
             light_records_index: 0,
         }
     }
@@ -147,7 +155,7 @@ impl eframe::App for LightsApp {
                 // set the 'width' (height) of the slider
                 ui.spacing_mut().slider_width = 600.0;
                 let resp = ui.add(
-                    egui::Slider::new(&mut self.value_master, 0..=255)
+                    egui::Slider::new(&mut self.values[self.slider_count - 1], 0..=255)
                         .integer()
                         .text("Master")
                         .orientation(egui::SliderOrientation::Vertical),

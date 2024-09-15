@@ -7,7 +7,8 @@ pub fn recalculate_lights_adjusted(lights_app: &mut LightsApp) {
         .enumerate()
         .map(|(i, &v)| {
             if lights_app.is_master_adjusteds[i] == true {
-                ((f64::from(v) * f64::from(lights_app.value_master)) / 255.0) as u8
+                ((f64::from(v) * f64::from(lights_app.values[lights_app.slider_count - 1])) / 255.0)
+                    as u8
             } else {
                 v
             }

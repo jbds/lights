@@ -11,7 +11,8 @@ pub fn get_closure(
             ui.label("                      ");
             // set the 'width' (height) of the slider
             ui.spacing_mut().slider_width = 300.0;
-            while count != 20 {
+            // last slider, the master dimmer, is a special case UI layout
+            while count != (lights_app.slider_count - 1) {
                 let resp = get_slider(ui, lights_app, count);
                 if resp.changed() == true {
                     recalculate_lights_adjusted(lights_app);
@@ -55,6 +56,7 @@ pub fn get_closure(
 }
 
 fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
+    // these magic numbers affect the UI layout only
     if count % 4 == 0 && count < 16 && count > 0 {
         ui.label("               ");
     }
