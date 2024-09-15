@@ -1,8 +1,8 @@
 use crate::utilities::recalculate_lights_adjusted;
-use crate::TemplateApp;
+use crate::LightsApp;
 
 pub fn get_closure(
-    template_app: &mut TemplateApp,
+    lights_app: &mut LightsApp,
 ) -> impl FnOnce(&mut egui::Ui) -> egui::Response + '_ {
     |ui| {
         //ui.heading("jonb b811111111111bb sales@jbds.co.uk");
@@ -14,9 +14,9 @@ pub fn get_closure(
             // set the 'width' (height) of the slider
             ui.spacing_mut().slider_width = 300.0;
             while count != 20 {
-                let resp = get_slider(ui, template_app, count);
+                let resp = get_slider(ui, lights_app, count);
                 if resp.changed() == true {
-                    recalculate_lights_adjusted(template_app);
+                    recalculate_lights_adjusted(lights_app);
                 }
                 count += 1;
             }
@@ -32,14 +32,14 @@ pub fn get_closure(
     }
 }
 
-fn get_slider(ui: &mut egui::Ui, template_app: &mut TemplateApp, count: usize) -> egui::Response {
+fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
     if count % 4 == 0 && count < 16 && count > 0 {
         ui.label("               ");
     }
     ui.add(
-        egui::Slider::new(&mut template_app.values[count], 0..=255)
+        egui::Slider::new(&mut lights_app.values[count], 0..=255)
             .integer()
-            .text(template_app.labels[count].clone())
+            .text(lights_app.labels[count].clone())
             .orientation(egui::SliderOrientation::Vertical),
     )
 }

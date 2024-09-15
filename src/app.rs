@@ -16,7 +16,7 @@ use std::time::{Duration, Instant};
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 //#[derive(serde::Deserialize, serde::Serialize)]
 //#[serde(default)] // if we add new fields, give them default values when deserializing old state
-pub struct TemplateApp {
+pub struct LightsApp {
     // Example stuff:
     _label: String,
 
@@ -46,7 +46,7 @@ fn configure_text_styles(ctx: &egui::Context) {
     ctx.set_style(style);
 }
 
-impl Default for TemplateApp {
+impl Default for LightsApp {
     fn default() -> Self {
         Self {
             // Example stuff:
@@ -90,7 +90,7 @@ impl Default for TemplateApp {
     }
 }
 
-impl TemplateApp {
+impl LightsApp {
     /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // This is also where you can customize the look and feel of egui using
@@ -108,7 +108,7 @@ impl TemplateApp {
     }
 }
 
-impl eframe::App for TemplateApp {
+impl eframe::App for LightsApp {
     /// Called by the frame work to save state before shutdown.
     fn save(&mut self, _storage: &mut dyn eframe::Storage) {
         // TURN THIS OFF - we want our own light state

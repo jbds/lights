@@ -5,5 +5,5 @@ mod central_panel;
 mod dmx_send;
 mod utilities;
 
-pub use app::TemplateApp;
+pub use app::LightsApp;
 //pub use dmx_send::spawn_receiver;
