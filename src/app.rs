@@ -1,27 +1,17 @@
 use crate::central_panel;
 use crate::utilities::recalculate_lights_adjusted;
+#[cfg(target_arch = "aarch64")]
 use dmx::{self, DmxTransmitter};
 use egui::FontFamily::Proportional;
 use egui::FontId;
 use egui::TextStyle::*;
 use std::time::{Duration, Instant};
 
-// #[derive(Clone, Debug)]
-// pub struct Light {
-//     pub value: u8,
-//     pub is_master_adjusted: bool,
-//     pub label: String,
-// }
-
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 //#[derive(serde::Deserialize, serde::Serialize)]
 //#[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct LightsApp {
-    // Example stuff:
-    _label: String,
-
     //#[serde(skip)] // This how you opt-out of serialization of a field
-    pub value: f32,      //made this public
     pub values: Vec<u8>, //Vec<u8>, //stores the current array of light values
     pub value_master: u8,
     pub is_master_adjusteds: Vec<bool>,
@@ -49,9 +39,6 @@ fn configure_text_styles(ctx: &egui::Context) {
 impl Default for LightsApp {
     fn default() -> Self {
         Self {
-            // Example stuff:
-            _label: "Hello World!".to_owned(),
-            value: 2.7,
             // initialize 20 lights with 3 attributes each
             values: vec![0; 20],
             is_master_adjusteds: vec![
