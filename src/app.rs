@@ -21,6 +21,8 @@ pub struct LightsApp {
     pub duration: Duration, // ditto
     #[cfg(target_arch = "aarch64")]
     pub dmx_port: dmx_serial::posix::TTYPort, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
+    pub light_records: Vec<Vec<u8>>,
+    pub light_records_index: i32,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -73,6 +75,8 @@ impl Default for LightsApp {
             duration: Duration::from_secs(0), // store elapsed time on each screen repaint
             #[cfg(target_arch = "aarch64")]
             dmx_port: dmx::open_serial("/dev/serial0").unwrap(), // create the serial port
+            light_records: vec![vec![0; 20], vec![128; 20], vec![255; 20]],
+            light_records_index: 0,
         }
     }
 }
@@ -157,10 +161,14 @@ impl eframe::App for LightsApp {
         egui::CentralPanel::default().show(ctx, central_panel::get_closure(self));
 
         if (self.instant.elapsed() - self.duration) > Duration::from_millis(50) {
-            println!(
-                ">50 ms elapsed since last repaint at {:?}",
-                &self.instant.elapsed()
-            );
+            // println!(
+            //     ">50 ms elapsed since last repaint at {:?}",
+            //     &self.instant.elapsed()
+            // );
+            //println!("light_records: {:?}", &self.light_records);
+            // for vals in self.light_records.iter() {
+            //     println!("vals: {:?}", &vals);
+            // }
             // send a dmx packet, &Vec<u8> can be coerced to &[u8]
             #[cfg(target_arch = "aarch64")]
             let _ = self.dmx_port.send_dmx_packet(&self.values_adjusted);
