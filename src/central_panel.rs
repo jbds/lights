@@ -21,8 +21,8 @@ pub fn get_closure(
             }
         });
 
-        ui.label("x");
-        ui.label("y");
+        ui.label("a");
+        ui.label("b");
         let mut i = 0;
         for vals in lights_app.light_records.iter() {
             if ui
@@ -33,16 +33,27 @@ pub fn get_closure(
                 .clicked()
             {
                 lights_app.light_records_index = i;
+                // set current values to this selected lights_record
+                lights_app.values =
+                    lights_app.light_records[lights_app.light_records_index].clone();
             }
             i += 1;
         }
         ui.label("x");
         ui.label("y");
         if ui.button("Next>").clicked() {
-            //println!("next");
-            //println!("{}", lights_app.light_records.len());
             lights_app.light_records_index =
-                (lights_app.light_records_index + 1) % (lights_app.light_records.len() as i32);
+                (lights_app.light_records_index + 1) % lights_app.light_records.len();
+            // set current values to this selected lights_record
+            lights_app.values = lights_app.light_records[lights_app.light_records_index].clone()
+        }
+
+        if ui.button("Fade Up").clicked() {
+            lights_app.is_fade_up = true;
+        }
+
+        if ui.button("Fade Down").clicked() {
+            lights_app.is_fade_down = true;
         }
 
         ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {

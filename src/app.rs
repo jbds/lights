@@ -21,8 +21,10 @@ pub struct LightsApp {
     pub duration: Duration, // ditto
     #[cfg(target_arch = "aarch64")]
     pub dmx_port: dmx_serial::posix::TTYPort, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
-    pub light_records: Vec<Vec<u8>>,
-    pub light_records_index: i32,
+    pub light_records: Vec<Vec<u8>>, // a list of all the slider values before any adjustment by the master slider
+    pub light_records_index: usize,
+    pub is_fade_up: bool,
+    pub is_fade_down: bool,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -85,6 +87,8 @@ impl Default for LightsApp {
                 vec![255; slider_count],
             ],
             light_records_index: 0,
+            is_fade_up: false,
+            is_fade_down: false,
         }
     }
 }
@@ -118,6 +122,9 @@ impl eframe::App for LightsApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`, `Window` or `Area`.
         // For inspiration and more examples, go to https://emilk.github.io/egui
+
+        // we want to update continuously, so that we can fade by incrementing master slider value up and dowm
+        ctx.request_repaint();
 
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             // The top panel is often a good place for a menu bar:
@@ -183,6 +190,32 @@ impl eframe::App for LightsApp {
             self.duration = self.instant.elapsed();
         } else {
             // leave duration as is to accumulate time
+        }
+
+        // increment the master dimmer, beware of overflow, clamp to 255 max
+        if (self.values[self.slider_count - 1] < 255) && (self.is_fade_up == true) {
+            let inc = 5;
+            if self.values[self.slider_count - 1] > 255 - inc {
+                self.values[self.slider_count - 1] = 255
+            } else {
+                self.values[self.slider_count - 1] += inc;
+            }
+        } else {
+            println!("master value reached 255");
+            self.is_fade_up = false;
+        }
+
+        // decrement the master dimmer, clamp to zero minimum
+        if self.values[self.slider_count - 1] > 0 && self.is_fade_down == true {
+            let dec = 5;
+            if self.values[self.slider_count - 1] < 0 + dec {
+                self.values[self.slider_count - 1] = 0;
+            } else {
+                self.values[self.slider_count - 1] -= dec;
+            }
+        } else {
+            println!("master value reached 0");
+            self.is_fade_down = false;
         }
     }
 }
