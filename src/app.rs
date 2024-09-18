@@ -1,5 +1,5 @@
 use crate::central_panel;
-use crate::utilities::recalculate_lights_adjusted;
+use crate::utilities;
 #[cfg(target_arch = "aarch64")]
 use dmx::{self, DmxTransmitter};
 use egui::FontFamily::Proportional;
@@ -168,7 +168,7 @@ impl eframe::App for LightsApp {
                         .orientation(egui::SliderOrientation::Vertical),
                 );
                 if resp.changed() == true {
-                    recalculate_lights_adjusted(self);
+                    utilities::recalculate_lights_adjusted(self);
                 }
             });
 
@@ -194,14 +194,9 @@ impl eframe::App for LightsApp {
 
         // increment the master dimmer, beware of overflow, clamp to 255 max
         if (self.values[self.slider_count - 1] < 255) && (self.is_fade_up == true) {
-            let inc = 5;
-            if self.values[self.slider_count - 1] > 255 - inc {
-                self.values[self.slider_count - 1] = 255
-            } else {
-                self.values[self.slider_count - 1] += inc;
-            }
+            utilities::increment_master(self);
+            utilities::recalculate_lights_adjusted(self);
         } else {
-            println!("master value reached 255");
             self.is_fade_up = false;
         }
 
@@ -213,8 +208,8 @@ impl eframe::App for LightsApp {
             } else {
                 self.values[self.slider_count - 1] -= dec;
             }
+            utilities::recalculate_lights_adjusted(self);
         } else {
-            println!("master value reached 0");
             self.is_fade_down = false;
         }
     }
