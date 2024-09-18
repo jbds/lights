@@ -202,12 +202,7 @@ impl eframe::App for LightsApp {
 
         // decrement the master dimmer, clamp to zero minimum
         if self.values[self.slider_count - 1] > 0 && self.is_fade_down == true {
-            let dec = 5;
-            if self.values[self.slider_count - 1] < 0 + dec {
-                self.values[self.slider_count - 1] = 0;
-            } else {
-                self.values[self.slider_count - 1] -= dec;
-            }
+            utilities::decrement_master(self);
             utilities::recalculate_lights_adjusted(self);
         } else {
             self.is_fade_down = false;
