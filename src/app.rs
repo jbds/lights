@@ -194,6 +194,7 @@ impl eframe::App for LightsApp {
 
         // increment the master dimmer, beware of overflow, clamp to 255 max
         if (self.values[self.slider_count - 1] < 255) && (self.is_fade_up == true) {
+            self.is_fade_down = false;
             utilities::increment_master(self);
             utilities::recalculate_lights_adjusted(self);
         } else {
@@ -202,6 +203,7 @@ impl eframe::App for LightsApp {
 
         // decrement the master dimmer, clamp to zero minimum
         if self.values[self.slider_count - 1] > 0 && self.is_fade_down == true {
+            self.is_fade_up = false;
             utilities::decrement_master(self);
             utilities::recalculate_lights_adjusted(self);
         } else {
