@@ -1,4 +1,4 @@
-use crate::utilities::recalculate_lights_adjusted;
+use crate::utilities;
 use crate::LightsApp;
 
 pub fn get_closure(
@@ -15,7 +15,11 @@ pub fn get_closure(
             while count != (lights_app.slider_count - 1) {
                 let resp = get_slider(ui, lights_app, count);
                 if resp.changed() == true {
-                    recalculate_lights_adjusted(lights_app);
+                    lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                        lights_app.values.clone(),
+                        lights_app.is_master_adjusteds.clone(),
+                        lights_app.slider_count,
+                    )
                 }
                 count += 1;
             }
@@ -36,6 +40,11 @@ pub fn get_closure(
                 // set current values to this selected lights_record
                 lights_app.values =
                     lights_app.light_records[lights_app.light_records_index].clone();
+                lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                    lights_app.values.clone(),
+                    lights_app.is_master_adjusteds.clone(),
+                    lights_app.slider_count,
+                )
             }
             i += 1;
         }
@@ -45,14 +54,21 @@ pub fn get_closure(
             lights_app.light_records_index =
                 (lights_app.light_records_index + 1) % lights_app.light_records.len();
             // set current values to this selected lights_record
-            lights_app.values = lights_app.light_records[lights_app.light_records_index].clone()
+            lights_app.values = lights_app.light_records[lights_app.light_records_index].clone();
+            lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                lights_app.values.clone(),
+                lights_app.is_master_adjusteds.clone(),
+                lights_app.slider_count,
+            )
         }
 
         if ui.button("Fade Up").clicked() {
+            lights_app.is_fade_down = false;
             lights_app.is_fade_up = true;
         }
 
         if ui.button("Fade Down").clicked() {
+            lights_app.is_fade_up = false;
             lights_app.is_fade_down = true;
         }
 

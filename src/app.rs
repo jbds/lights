@@ -168,7 +168,11 @@ impl eframe::App for LightsApp {
                         .orientation(egui::SliderOrientation::Vertical),
                 );
                 if resp.changed() == true {
-                    utilities::recalculate_lights_adjusted(self);
+                    self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                        self.values.clone(),
+                        self.is_master_adjusteds.clone(),
+                        self.slider_count,
+                    )
                 }
             });
 
@@ -194,18 +198,25 @@ impl eframe::App for LightsApp {
 
         // increment the master dimmer, beware of overflow, clamp to 255 max
         if (self.values[self.slider_count - 1] < 255) && (self.is_fade_up == true) {
-            self.is_fade_down = false;
             utilities::increment_master(self);
-            utilities::recalculate_lights_adjusted(self);
+            self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                self.values.clone(),
+                self.is_master_adjusteds.clone(),
+                self.slider_count,
+            )
         } else {
             self.is_fade_up = false;
         }
 
         // decrement the master dimmer, clamp to zero minimum
         if self.values[self.slider_count - 1] > 0 && self.is_fade_down == true {
-            self.is_fade_up = false;
             utilities::decrement_master(self);
-            utilities::recalculate_lights_adjusted(self);
+            //utilities::recalculate_lights_adjusted(self);
+            self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                self.values.clone(),
+                self.is_master_adjusteds.clone(),
+                self.slider_count,
+            )
         } else {
             self.is_fade_down = false;
         }
