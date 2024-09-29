@@ -82,11 +82,12 @@ impl Default for LightsApp {
             duration: Duration::from_secs(0), // store elapsed time on each screen repaint
             #[cfg(target_arch = "aarch64")]
             dmx_port: dmx::open_serial("/dev/serial0").unwrap(), // create the serial port
-            light_records: vec![
-                vec![0; slider_count],
-                vec![128; slider_count],
-                vec![255; slider_count],
-            ],
+            // light_records: vec![
+            //     vec![0; slider_count],
+            //     vec![128; slider_count],
+            //     vec![255; slider_count],
+            // ],
+            light_records: json_storage::read_from_file().unwrap(),
             light_records_index: 0,
             is_fade_up: false,
             is_fade_down: false,

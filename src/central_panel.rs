@@ -1,3 +1,4 @@
+use crate::json_storage;
 use crate::utilities;
 use crate::LightsApp;
 
@@ -70,6 +71,13 @@ pub fn get_closure(
         if ui.button("Fade Down").clicked() {
             lights_app.is_fade_up = false;
             lights_app.is_fade_down = true;
+        }
+
+        if ui.button("Save to selected").clicked() {
+            // store raw values, NOT the adjusted ones!
+            lights_app.light_records[lights_app.light_records_index] = lights_app.values.clone();
+            // persist
+            let _ = json_storage::write_to_file(&lights_app.light_records);
         }
 
         ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
