@@ -3,6 +3,7 @@
 mod app;
 mod central_panel;
 mod dmx_send;
+mod json_storage;
 mod utilities;
 
 pub use app::LightsApp;
