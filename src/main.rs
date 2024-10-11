@@ -6,9 +6,9 @@ fn main() -> eframe::Result {
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             // buggy, have to set min_inner_size
-            .with_inner_size([1300.0, 700.0])
-            .with_min_inner_size([1300.0, 700.0])
-            .with_max_inner_size([1302.0, 702.0]),
+            .with_inner_size([800.0, 600.0])
+            .with_min_inner_size([750.0, 550.0])
+            .with_max_inner_size([850.0, 650.0]),
         ..Default::default()
     };
 

@@ -133,7 +133,7 @@ impl eframe::App for LightsApp {
 
             egui::menu::bar(ui, |ui| {
                 ui.menu_button("File", |ui| {
-                    if ui.button("Shrink").clicked() {
+                    if ui.button("Minimize").clicked() {
                         ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
                     }
                     if ui.button("Quit").clicked() {
