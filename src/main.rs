@@ -5,10 +5,11 @@ fn main() -> eframe::Result {
 
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            // buggy, have to set min_inner_size
-            .with_inner_size([800.0, 600.0])
-            .with_min_inner_size([750.0, 550.0])
-            .with_max_inner_size([850.0, 650.0]),
+            // buggy, have to set min_inner_size, inner_size is ignored
+            // honoured on ryzen but totally ignored on raspi
+            //.with_inner_size([1920.0, 768.0])
+            .with_min_inner_size([1250.0, 600.0])
+            .with_max_inner_size([1920.0, 1080.0]),
         ..Default::default()
     };
 
