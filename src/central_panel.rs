@@ -27,8 +27,10 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
         }
 
         ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-            let _response = ui.add(egui::TextEdit::singleline(&mut lights_app.short_text));
-            let _response = ui.add(egui::TextEdit::singleline(&mut lights_app.long_text));
+            ui.horizontal(|ui| {
+                let _response = ui.add(egui::TextEdit::singleline(&mut lights_app.short_text));
+                let _response = ui.add(egui::TextEdit::singleline(&mut lights_app.long_text));
+            });
         });
     });
 }
