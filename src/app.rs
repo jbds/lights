@@ -1,8 +1,10 @@
 use crate::central_panel;
 use crate::json_storage;
 use crate::left_panel;
+use crate::right_panel;
 use crate::top_panel;
 use crate::utilities;
+
 #[cfg(target_arch = "aarch64")]
 use dmx::{self, DmxTransmitter};
 use egui::FontFamily::Proportional;
@@ -134,88 +136,9 @@ impl eframe::App for LightsApp {
 
         left_panel::get_me(self, ctx);
 
-        egui::SidePanel::right("rhs_panel")
-            .show_separator_line(true)
-            .min_width(130.0)
-            .resizable(false)
-            .show(ctx, |ui| {
-                ui.label("");
-                if ui.button("Fade Up").clicked() {
-                    self.is_fade_down = false;
-                    self.is_fade_up = true;
-                }
+        right_panel::get_me(self, ctx);
 
-                ui.label("");
-                if ui.button("Edit Selected").clicked() {
-                    // store raw values, NOT the adjusted ones!
-                    // force the master value to zero
-                    let mut tweaked_values = self.values.clone();
-                    tweaked_values[self.values.len() - 1] = 0;
-                    self.light_records[self.light_records_index] = tweaked_values;
-                    // persist the whole list of light records
-                    let _ = json_storage::write_to_file(&self.light_records);
-                }
-
-                ui.label("");
-                if ui.button("Del Selected").clicked() {
-                    // do nothing if length of lighting records is zero
-                    if self.light_records.len() != 0 {
-                        self.light_records.remove(self.light_records_index);
-                        // adjust index if end of records
-                        if self.light_records.len() != 0
-                            && self.light_records.len() == self.light_records_index
-                        {
-                            self.light_records_index -= 1;
-                        }
-                        let _ = json_storage::write_to_file(&self.light_records);
-                    }
-                }
-
-                ui.label("");
-                if ui.button("Add After Selected").clicked {
-                    if self.light_records.len() == 0 {
-                        self.light_records.push(vec![0; self.slider_count]);
-                    } else {
-                        self.light_records
-                            .insert(self.light_records_index + 1, vec![0; self.slider_count]);
-                    }
-                    let _ = json_storage::write_to_file(&self.light_records);
-                }
-
-                ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                    //egui::warn_if_debug_build(ui);
-                    ui.label("");
-                    if ui
-                        .add_sized([110., 80.], egui::Button::new("Fade Down"))
-                        .clicked()
-                    {
-                        self.is_fade_up = false;
-                        self.is_fade_down = true;
-                    }
-
-                    ui.label("");
-                    if ui
-                        .add_sized([110., 80.], egui::Button::new("Next >"))
-                        .clicked()
-                    {
-                        self.light_records_index =
-                            (self.light_records_index + 1) % self.light_records.len();
-                        // set current values to this selected lights_record
-                        self.values = self.light_records[self.light_records_index].clone();
-                        self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
-                            self.values.clone(),
-                            self.is_master_adjusteds.clone(),
-                            self.slider_count,
-                        );
-                        // trigger an auto fade up
-                        self.is_fade_down = false;
-                        self.is_fade_up = true;
-                    }
-                });
-            });
-
-        //let my_closure = |ui: &mut egui::Ui| ui.heading("jonb zzzzz sales@jbds.co.uk");
-        egui::CentralPanel::default().show(ctx, central_panel::get_closure(self));
+        central_panel::get_me(self, ctx);
 
         if (self.instant.elapsed() - self.duration) > Duration::from_millis(50) {
             // println!(
