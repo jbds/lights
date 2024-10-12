@@ -55,3 +55,17 @@ pub fn decrement_master(lights_app: &mut LightsApp) {
         lights_app.values[lights_app.slider_count - 1] -= dec5;
     }
 }
+
+pub fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
+    // these magic numbers affect the UI layout only
+    if count % 4 == 0 && count < 16 && count > 0 {
+        ui.label("     ");
+    }
+    ui.add(
+        egui::Slider::new(&mut lights_app.values[count], 0..=255)
+            .integer()
+            .text(lights_app.labels[count].clone())
+            //.orientation(egui::SliderOrientation::Vertical),
+            .orientation(egui::SliderOrientation::Horizontal),
+    )
+}

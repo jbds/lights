@@ -1,5 +1,6 @@
 use crate::central_panel;
 use crate::json_storage;
+use crate::left_panel;
 use crate::top_panel;
 use crate::utilities;
 #[cfg(target_arch = "aarch64")]
@@ -130,6 +131,8 @@ impl eframe::App for LightsApp {
         ctx.request_repaint();
 
         top_panel::get_me(self, ctx);
+
+        left_panel::get_me(self, ctx);
 
         egui::SidePanel::right("rhs_panel")
             .show_separator_line(true)
