@@ -31,7 +31,7 @@ pub struct LightsApp {
     pub is_fade_up: bool,
     pub is_fade_down: bool,
     pub short_text: String,
-    pub long_text: String,
+    //pub long_text: String,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -98,7 +98,7 @@ impl Default for LightsApp {
             is_fade_up: false,
             is_fade_down: false,
             short_text: "30".to_string(),
-            long_text: "Last Scene of Pantomime".to_string(),
+            //long_text: "Last Scene of Pantomime".to_string(),
         }
     }
 }

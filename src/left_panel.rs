@@ -4,6 +4,11 @@ use crate::LightsApp;
 pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
     egui::SidePanel::left("left_panel").show(ctx, |ui| {
         //ui.label("left_panel_placeholder");
+
+        ui.horizontal(|ui| {
+            let _response = ui.add(egui::TextEdit::singleline(&mut lights_app.short_text));
+        });
+
         let mut count: usize = 0;
         // set the 'width' (height) of the sliders
         ui.spacing_mut().slider_width = 300.0;
