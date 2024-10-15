@@ -70,24 +70,27 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 }
 
                 ui.label("");
-                // if ui
-                //     .add_sized([110., 80.], egui::Button::new("Next >"))
-                //     .clicked()
-                // {
-                //     lights_app.light_records_index =
-                //         (lights_app.light_records_index + 1) % lights_app.light_records.len();
-                //     // set current values to this selected lights_record
-                //     lights_app.values =
-                //         lights_app.light_records[lights_app.light_records_index].clone();
-                //     lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
-                //         lights_app.values.clone(),
-                //         lights_app.is_master_adjusteds.clone(),
-                //         lights_app.slider_count,
-                //     );
-                //     // trigger an auto fade up
-                //     lights_app.is_fade_down = false;
-                //     lights_app.is_fade_up = true;
-                // }
+                if ui
+                    .add_sized([110., 80.], egui::Button::new("Next >"))
+                    .clicked()
+                {
+                    lights_app.light_records_index =
+                        (lights_app.light_records_index + 1) % lights_app.light_records.len();
+                    // set current values to this selected lights_record
+                    // lights_app.values =
+                    //     lights_app.light_records[lights_app.light_records_index].clone();
+                    (lights_app.short_text, lights_app.values) =
+                        lights_app.light_records[lights_app.light_records_index].clone();
+
+                    lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                        lights_app.values.clone(),
+                        lights_app.is_master_adjusteds.clone(),
+                        lights_app.slider_count,
+                    );
+                    // trigger an auto fade up
+                    lights_app.is_fade_down = false;
+                    lights_app.is_fade_up = true;
+                }
             });
         });
 }
