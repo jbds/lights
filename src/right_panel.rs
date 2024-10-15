@@ -43,19 +43,18 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             // }
 
             ui.label("");
-            // if ui.button("Add After Selected").clicked {
-            //     if lights_app.light_records.len() == 0 {
-            //         lights_app
-            //             .light_records
-            //             .push(vec![0; lights_app.slider_count]);
-            //     } else {
-            //         lights_app.light_records.insert(
-            //             lights_app.light_records_index + 1,
-            //             vec![0; lights_app.slider_count],
-            //         );
-            //     }
-            //     let _ = json_storage::write_to_file(&lights_app.light_records);
-            // }
+            if ui.button("Add After Selected").clicked {
+                let u8s = vec![0; lights_app.slider_count];
+                if lights_app.light_records.len() == 0 {
+                    lights_app.light_records.push(("Scene".to_string(), u8s));
+                } else {
+                    lights_app.light_records.insert(
+                        lights_app.light_records_index + 1,
+                        ("Scene".to_string(), u8s),
+                    );
+                }
+                let _ = json_storage::write_to_file(&lights_app.light_records);
+            }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 //egui::warn_if_debug_build(ui);
