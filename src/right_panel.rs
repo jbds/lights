@@ -26,21 +26,21 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             // }
 
             ui.label("");
-            // if ui.button("Del Selected").clicked() {
-            //     // do nothing if length of lighting records is zero
-            //     if lights_app.light_records.len() != 0 {
-            //         lights_app
-            //             .light_records
-            //             .remove(lights_app.light_records_index);
-            //         // adjust index if end of records
-            //         if lights_app.light_records.len() != 0
-            //             && lights_app.light_records.len() == lights_app.light_records_index
-            //         {
-            //             lights_app.light_records_index -= 1;
-            //         }
-            //         let _ = json_storage::write_to_file(&lights_app.light_records);
-            //     }
-            // }
+            if ui.button("Del Selected").clicked() {
+                // do nothing if length of lighting records is zero
+                if lights_app.light_records.len() != 0 {
+                    lights_app
+                        .light_records
+                        .remove(lights_app.light_records_index);
+                    // adjust index if end of records
+                    if lights_app.light_records.len() != 0
+                        && lights_app.light_records.len() == lights_app.light_records_index
+                    {
+                        lights_app.light_records_index -= 1;
+                    }
+                    let _ = json_storage::write_to_file(&lights_app.light_records);
+                }
+            }
 
             ui.label("");
             if ui.button("Add After Selected").clicked {
