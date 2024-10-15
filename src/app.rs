@@ -97,7 +97,7 @@ impl Default for LightsApp {
             light_records_index: 0,
             is_fade_up: false,
             is_fade_down: false,
-            short_text: "30".to_string(),
+            short_text: "Scene 2 - Whixley Village Scene / Nan Tucks Cafe".to_string(),
             //long_text: "Last Scene of Pantomime".to_string(),
         }
     }

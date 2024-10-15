@@ -1,3 +1,5 @@
+use core::f32;
+
 use crate::utilities;
 use crate::LightsApp;
 
@@ -5,14 +7,18 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
     egui::SidePanel::left("left_panel").show(ctx, |ui| {
         //ui.label("left_panel_placeholder");
 
+        ui.label("");
         ui.horizontal(|ui| {
-            let _response = ui.add(egui::TextEdit::singleline(&mut lights_app.short_text));
+            let _response = ui.add(
+                egui::TextEdit::singleline(&mut lights_app.short_text).desired_width(f32::INFINITY),
+            );
         });
 
         let mut count: usize = 0;
         // set the 'width' (height) of the sliders
         ui.spacing_mut().slider_width = 300.0;
 
+        ui.label("");
         // paint all sliders except last one
         while count != (lights_app.slider_count - 1) {
             let resp = utilities::get_slider(ui, lights_app, count);
