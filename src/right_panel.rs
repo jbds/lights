@@ -15,47 +15,47 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             }
 
             ui.label("");
-            if ui.button("Edit Selected").clicked() {
-                // store raw values, NOT the adjusted ones!
-                // force the master value to zero
-                let mut tweaked_values = lights_app.values.clone();
-                tweaked_values[lights_app.values.len() - 1] = 0;
-                lights_app.light_records[lights_app.light_records_index] = tweaked_values;
-                // persist the whole list of light records
-                let _ = json_storage::write_to_file(&lights_app.light_records);
-            }
+            // if ui.button("Edit Selected").clicked() {
+            //     // store raw values, NOT the adjusted ones!
+            //     // force the master value to zero
+            //     let mut tweaked_values = lights_app.values.clone();
+            //     tweaked_values[lights_app.values.len() - 1] = 0;
+            //     lights_app.light_records[lights_app.light_records_index] = tweaked_values;
+            //     // persist the whole list of light records
+            //     let _ = json_storage::write_to_file(&lights_app.light_records);
+            // }
 
             ui.label("");
-            if ui.button("Del Selected").clicked() {
-                // do nothing if length of lighting records is zero
-                if lights_app.light_records.len() != 0 {
-                    lights_app
-                        .light_records
-                        .remove(lights_app.light_records_index);
-                    // adjust index if end of records
-                    if lights_app.light_records.len() != 0
-                        && lights_app.light_records.len() == lights_app.light_records_index
-                    {
-                        lights_app.light_records_index -= 1;
-                    }
-                    let _ = json_storage::write_to_file(&lights_app.light_records);
-                }
-            }
+            // if ui.button("Del Selected").clicked() {
+            //     // do nothing if length of lighting records is zero
+            //     if lights_app.light_records.len() != 0 {
+            //         lights_app
+            //             .light_records
+            //             .remove(lights_app.light_records_index);
+            //         // adjust index if end of records
+            //         if lights_app.light_records.len() != 0
+            //             && lights_app.light_records.len() == lights_app.light_records_index
+            //         {
+            //             lights_app.light_records_index -= 1;
+            //         }
+            //         let _ = json_storage::write_to_file(&lights_app.light_records);
+            //     }
+            // }
 
             ui.label("");
-            if ui.button("Add After Selected").clicked {
-                if lights_app.light_records.len() == 0 {
-                    lights_app
-                        .light_records
-                        .push(vec![0; lights_app.slider_count]);
-                } else {
-                    lights_app.light_records.insert(
-                        lights_app.light_records_index + 1,
-                        vec![0; lights_app.slider_count],
-                    );
-                }
-                let _ = json_storage::write_to_file(&lights_app.light_records);
-            }
+            // if ui.button("Add After Selected").clicked {
+            //     if lights_app.light_records.len() == 0 {
+            //         lights_app
+            //             .light_records
+            //             .push(vec![0; lights_app.slider_count]);
+            //     } else {
+            //         lights_app.light_records.insert(
+            //             lights_app.light_records_index + 1,
+            //             vec![0; lights_app.slider_count],
+            //         );
+            //     }
+            //     let _ = json_storage::write_to_file(&lights_app.light_records);
+            // }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 //egui::warn_if_debug_build(ui);
@@ -69,24 +69,24 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 }
 
                 ui.label("");
-                if ui
-                    .add_sized([110., 80.], egui::Button::new("Next >"))
-                    .clicked()
-                {
-                    lights_app.light_records_index =
-                        (lights_app.light_records_index + 1) % lights_app.light_records.len();
-                    // set current values to this selected lights_record
-                    lights_app.values =
-                        lights_app.light_records[lights_app.light_records_index].clone();
-                    lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
-                        lights_app.values.clone(),
-                        lights_app.is_master_adjusteds.clone(),
-                        lights_app.slider_count,
-                    );
-                    // trigger an auto fade up
-                    lights_app.is_fade_down = false;
-                    lights_app.is_fade_up = true;
-                }
+                // if ui
+                //     .add_sized([110., 80.], egui::Button::new("Next >"))
+                //     .clicked()
+                // {
+                //     lights_app.light_records_index =
+                //         (lights_app.light_records_index + 1) % lights_app.light_records.len();
+                //     // set current values to this selected lights_record
+                //     lights_app.values =
+                //         lights_app.light_records[lights_app.light_records_index].clone();
+                //     lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                //         lights_app.values.clone(),
+                //         lights_app.is_master_adjusteds.clone(),
+                //         lights_app.slider_count,
+                //     );
+                //     // trigger an auto fade up
+                //     lights_app.is_fade_down = false;
+                //     lights_app.is_fade_up = true;
+                // }
             });
         });
 }

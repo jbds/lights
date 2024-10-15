@@ -11,7 +11,7 @@ pub fn write_to_file(lighting_records: &Vec<Vec<u8>>) -> std::io::Result<()> {
     Ok(())
 }
 
-pub fn read_from_file() -> Result<Vec<Vec<u8>>, Error> {
+pub fn read_from_file() -> Result<Vec<(String, Vec<u8>)>, Error> {
     // will panic if no file
     let file = File::open("lighting_records.json").expect("File not found or corrupt");
     let reader = BufReader::new(file);

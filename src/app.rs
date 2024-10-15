@@ -26,8 +26,8 @@ pub struct LightsApp {
     pub duration: Duration, // ditto
     #[cfg(target_arch = "aarch64")]
     pub dmx_port: dmx_serial::posix::TTYPort, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
-    pub light_records: Vec<Vec<u8>>, // a list of all the slider values before any adjustment by the master slider and master alaways zero
-    pub light_records_index: usize,  // initialized to zero
+    pub light_records: Vec<(String, Vec<u8>)>, // a list of scene names plus all the slider values before any adjustment by the master slider and master alaways zero
+    pub light_records_index: usize,            // initialized to zero
     pub is_fade_up: bool,
     pub is_fade_down: bool,
     pub short_text: String,
