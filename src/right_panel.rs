@@ -15,15 +15,17 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             }
 
             ui.label("");
-            // if ui.button("Edit Selected").clicked() {
-            //     // store raw values, NOT the adjusted ones!
-            //     // force the master value to zero
-            //     let mut tweaked_values = lights_app.values.clone();
-            //     tweaked_values[lights_app.values.len() - 1] = 0;
-            //     lights_app.light_records[lights_app.light_records_index] = tweaked_values;
-            //     // persist the whole list of light records
-            //     let _ = json_storage::write_to_file(&lights_app.light_records);
-            // }
+            if ui.button("Edit Selected").clicked() {
+                // store raw values, NOT the adjusted ones!
+                let mut tweaked_values = lights_app.values.clone();
+                // force the master value to zero
+                tweaked_values[lights_app.values.len() - 1] = 0;
+                // adjust light records to match current values
+                lights_app.light_records[lights_app.light_records_index] =
+                    (lights_app.short_text.clone(), tweaked_values);
+                // persist the whole list of light records
+                let _ = json_storage::write_to_file(&lights_app.light_records);
+            }
 
             ui.label("");
             if ui.button("Del Selected").clicked() {
