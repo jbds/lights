@@ -83,7 +83,17 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             }
 
             ui.label("");
-            ui.checkbox(&mut lights_app.is_blackout, "Blackout");
+            if ui
+                .checkbox(&mut lights_app.is_blackout, "Blackout")
+                .clicked()
+            {
+                lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                    lights_app.values.clone(),
+                    lights_app.is_master_adjusteds.clone(),
+                    lights_app.slider_count,
+                    lights_app.is_blackout,
+                );
+            }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 //egui::warn_if_debug_build(ui);
