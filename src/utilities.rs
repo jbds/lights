@@ -11,7 +11,7 @@ pub fn recalculate_lights_adjusted_no_borrow(
         .enumerate()
         .map(|(i, &v)| {
             if is_master_adjusteds[i] == true {
-                ((f64::from(v) * f64::from(values[slider_count - 1]) * f64::from(is_blackout))
+                ((f64::from(v) * f64::from(values[slider_count - 1]) * f64::from(!is_blackout))
                     / 255.0) as u8
             } else {
                 v
