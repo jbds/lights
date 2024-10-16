@@ -31,7 +31,7 @@ pub struct LightsApp {
     pub is_fade_up: bool,
     pub is_fade_down: bool,
     pub short_text: String,
-    //pub long_text: String,
+    pub is_blackout: bool,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -99,6 +99,7 @@ impl Default for LightsApp {
             is_fade_down: false,
             short_text: "".to_string(),
             //long_text: "Last Scene of Pantomime".to_string(),
+            is_blackout: false,
         }
     }
 }
@@ -168,6 +169,7 @@ impl eframe::App for LightsApp {
                 self.values.clone(),
                 self.is_master_adjusteds.clone(),
                 self.slider_count,
+                self.is_blackout,
             )
         } else {
             self.is_fade_up = false;
@@ -176,11 +178,11 @@ impl eframe::App for LightsApp {
         // decrement the master dimmer, clamp to zero minimum
         if self.values[self.slider_count - 1] > 0 && self.is_fade_down == true {
             utilities::decrement_master(self);
-            //utilities::recalculate_lights_adjusted(self);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),
                 self.is_master_adjusteds.clone(),
                 self.slider_count,
+                self.is_blackout,
             )
         } else {
             self.is_fade_down = false;

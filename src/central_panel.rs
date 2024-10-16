@@ -25,6 +25,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     lights_app.values.clone(),
                     lights_app.is_master_adjusteds.clone(),
                     lights_app.slider_count,
+                    lights_app.is_blackout,
                 )
             }
             count += 1;
@@ -44,6 +45,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 lights_app.values.clone(),
                 lights_app.is_master_adjusteds.clone(),
                 lights_app.slider_count,
+                lights_app.is_blackout,
             )
         }
     });

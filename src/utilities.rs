@@ -4,13 +4,15 @@ pub fn recalculate_lights_adjusted_no_borrow(
     values: Vec<u8>,
     is_master_adjusteds: Vec<bool>,
     slider_count: usize,
+    is_blackout: bool,
 ) -> Vec<u8> {
     values
         .iter()
         .enumerate()
         .map(|(i, &v)| {
             if is_master_adjusteds[i] == true {
-                ((f64::from(v) * f64::from(values[slider_count - 1])) / 255.0) as u8
+                ((f64::from(v) * f64::from(values[slider_count - 1]) * f64::from(is_blackout))
+                    / 255.0) as u8
             } else {
                 v
             }
