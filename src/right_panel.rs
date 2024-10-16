@@ -9,10 +9,6 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
         .resizable(false)
         .show(ctx, |ui| {
             //ui.label("right_panel_placeholder");
-            if ui.button("Fade Up").clicked() {
-                lights_app.is_fade_down = false;
-                lights_app.is_fade_up = true;
-            }
 
             ui.label("");
             if ui.button("Edit Selected").clicked() {
@@ -58,6 +54,33 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 let _ = json_storage::write_to_file(&lights_app.light_records);
             }
 
+            ui.label("");
+            if ui.button("< Back").clicked {
+                // avoid subtract with overflow panic
+                if lights_app.light_records_index == 0 {
+                    lights_app.light_records_index = lights_app.light_records.len() - 1;
+                } else {
+                    lights_app.light_records_index =
+                        (lights_app.light_records_index - 1) % lights_app.light_records.len();
+                }
+
+                // set current values to this selected lights_record
+                (lights_app.short_text, lights_app.values) =
+                    lights_app.light_records[lights_app.light_records_index].clone();
+                // sync adjusted values
+                lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                    lights_app.values.clone(),
+                    lights_app.is_master_adjusteds.clone(),
+                    lights_app.slider_count,
+                );
+            }
+
+            ui.label("");
+            if ui.button("Fade Up").clicked() {
+                lights_app.is_fade_down = false;
+                lights_app.is_fade_up = true;
+            }
+
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 //egui::warn_if_debug_build(ui);
                 ui.label("");
@@ -77,8 +100,6 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     lights_app.light_records_index =
                         (lights_app.light_records_index + 1) % lights_app.light_records.len();
                     // set current values to this selected lights_record
-                    // lights_app.values =
-                    //     lights_app.light_records[lights_app.light_records_index].clone();
                     (lights_app.short_text, lights_app.values) =
                         lights_app.light_records[lights_app.light_records_index].clone();
 

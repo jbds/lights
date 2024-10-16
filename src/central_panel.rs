@@ -4,31 +4,47 @@ use crate::LightsApp;
 pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
     egui::CentralPanel::default().show(ctx, |ui| {
         //ui.label("central_panel_placeholder");
-        let mut i = 0;
-        for vals in lights_app.light_records.iter() {
-            // display all records
-            if ui
-                .add(egui::SelectableLabel::new(
-                    i == lights_app.light_records_index,
-                    format!("No:{} {:?}", i, &vals),
-                ))
-                .clicked()
-            {
-                // show this record as selected
-                lights_app.light_records_index = i;
-                // set current values to this selected lights_record
-                let temp = lights_app.light_records[lights_app.light_records_index].clone();
-                lights_app.values = temp.1;
-                // set scene desc to this selected record
-                lights_app.short_text = temp.0;
-                //qualify by masrer dimmer
+
+        ui.label("");
+        ui.horizontal(|ui| {
+            let _response = ui.add(
+                egui::TextEdit::singleline(&mut lights_app.short_text).desired_width(f32::INFINITY),
+            );
+        });
+
+        let mut count: usize = 0;
+        // set the 'width' (height) of the sliders
+        ui.spacing_mut().slider_width = 300.0;
+
+        ui.label("");
+        // paint all sliders except last one
+        while count != (lights_app.slider_count - 1) {
+            let resp = utilities::get_slider(ui, lights_app, count);
+            if resp.changed() == true {
                 lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                     lights_app.values.clone(),
                     lights_app.is_master_adjusteds.clone(),
                     lights_app.slider_count,
                 )
             }
-            i += 1;
+            count += 1;
+        }
+
+        // last slider, the master dimmer, is a special case UI layout
+        ui.label("     ");
+        let resp2 = ui.add(
+            egui::Slider::new(&mut lights_app.values[lights_app.slider_count - 1], 0..=255)
+                .integer()
+                .text("Master")
+                //.orientation(egui::SliderOrientation::Vertical),
+                .orientation(egui::SliderOrientation::Horizontal),
+        );
+        if resp2.changed() == true {
+            lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                lights_app.values.clone(),
+                lights_app.is_master_adjusteds.clone(),
+                lights_app.slider_count,
+            )
         }
     });
 }
