@@ -23,8 +23,8 @@ pub fn recalculate_lights_adjusted_no_borrow(
 pub fn increment_master(lights_app: &mut LightsApp) {
     let inc1 = 1;
     let inc2 = 2;
-    let inc3 = 3;
-    let inc5 = 5;
+    let inc3 = 4;
+    let inc5 = 8;
     let val = lights_app.values[lights_app.slider_count - 1];
     if val > 255 - inc5 {
         lights_app.values[lights_app.slider_count - 1] = 255
@@ -40,8 +40,8 @@ pub fn increment_master(lights_app: &mut LightsApp) {
 }
 
 pub fn decrement_master(lights_app: &mut LightsApp) {
-    let dec5 = 5;
-    let dec3 = 3;
+    let dec5 = 8;
+    let dec3 = 4;
     let dec2 = 2;
     let dec1 = 1;
     let val = lights_app.values[lights_app.slider_count - 1];
