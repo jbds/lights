@@ -69,7 +69,7 @@ pub fn shimmer_master(lights_app: &mut LightsApp) {
     let y = f64::sin(x * PI * 2.0 / 333.0);
     //println!("{}", y);
     lights_app.values[lights_app.slider_count - 1] =
-        (lights_app.shimmer_master_value as f64 * (1.0 + (y / 20.0))) as u8;
+        (lights_app.shimmer_master_value as f64 * (1.0 - ((y + 1.0) / 20.0))) as u8;
     println!("{}", lights_app.values[lights_app.slider_count - 1]);
 }
 

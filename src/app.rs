@@ -104,10 +104,10 @@ impl Default for LightsApp {
             short_text: "".to_string(),
             //long_text: "Last Scene of Pantomime".to_string(),
             is_blackout: false,
-            is_shimmer: true,
+            is_shimmer: false,
             shimmer_instant: Instant::now(),
             shimmer_duration: Duration::from_secs(0), //store elapsed time until time for repeat cycle
-            shimmer_master_value: 128,
+            shimmer_master_value: 0,
         }
     }
 }
@@ -198,8 +198,6 @@ impl eframe::App for LightsApp {
 
         // shimmer
         if self.is_shimmer == true {
-            // store current master value
-            //self.shimmer_master_value = self.values[self.slider_count - 1];
             utilities::shimmer_master(self);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),

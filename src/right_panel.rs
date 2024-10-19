@@ -95,6 +95,12 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 );
             }
 
+            ui.label("");
+            if ui.checkbox(&mut lights_app.is_shimmer, "Shimmer").clicked() {
+                // store current master value
+                lights_app.shimmer_master_value = lights_app.values[lights_app.slider_count - 1];
+            }
+
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 //egui::warn_if_debug_build(ui);
                 ui.label("");
