@@ -110,8 +110,8 @@ impl Default for LightsApp {
             shimmer_instant: Instant::now(),
             shimmer_duration: Duration::from_secs(0), //store elapsed time until time for repeat cycle
             shimmer_master_value: 0,
-            shimmer_amplitude_percent: 25.0,
-            shimmer_frequency_hertz: 3.0,
+            shimmer_amplitude_percent: 60.0,
+            shimmer_frequency_hertz: 2.0,
         }
     }
 }

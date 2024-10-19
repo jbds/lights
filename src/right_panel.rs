@@ -114,7 +114,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             });
             ui.horizontal(|ui| {
                 let _resp = ui.add(
-                    egui::Slider::new(&mut lights_app.shimmer_frequency_hertz, 0.5..=10.0)
+                    egui::Slider::new(&mut lights_app.shimmer_frequency_hertz, 0.25..=4.0)
                         //.integer()
                         .text("F")
                         //.orientation(egui::SliderOrientation::Vertical),
