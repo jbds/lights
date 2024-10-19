@@ -101,6 +101,27 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 lights_app.shimmer_master_value = lights_app.values[lights_app.slider_count - 1];
             }
 
+            // set the 'width' (height) of the sliders
+            ui.spacing_mut().slider_width = 100.0;
+            ui.horizontal(|ui| {
+                let _resp = ui.add(
+                    egui::Slider::new(&mut lights_app.shimmer_amplitude_percent, 0.0..=100.0)
+                        .integer()
+                        .text("A")
+                        //.orientation(egui::SliderOrientation::Vertical),
+                        .orientation(egui::SliderOrientation::Horizontal),
+                );
+            });
+            ui.horizontal(|ui| {
+                let _resp = ui.add(
+                    egui::Slider::new(&mut lights_app.shimmer_frequency_hertz, 0.5..=10.0)
+                        //.integer()
+                        .text("F")
+                        //.orientation(egui::SliderOrientation::Vertical),
+                        .orientation(egui::SliderOrientation::Horizontal),
+                );
+            });
+
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 //egui::warn_if_debug_build(ui);
                 ui.label("");

@@ -61,15 +61,17 @@ pub fn decrement_master(lights_app: &mut LightsApp) {
 }
 
 pub fn shimmer_master(lights_app: &mut LightsApp) {
-    // reset cycle every 333ms - this number affects rate of shimmer
-    if lights_app.shimmer_instant.elapsed() > Duration::from_millis(333) {
+    // reset cycle every whole cycle - this number affects rate of shimmer
+    let cycle_time_ms = 1000.0 / lights_app.shimmer_frequency_hertz;
+    if lights_app.shimmer_instant.elapsed() > Duration::from_millis(cycle_time_ms as u64) {
         lights_app.shimmer_instant = Instant::now();
     }
     let x = lights_app.shimmer_instant.elapsed().as_secs_f64() * 1000.0;
-    let y = f64::sin(x * PI * 2.0 / 333.0);
+    let y = f64::sin(x * PI * 2.0 / cycle_time_ms);
     //println!("{}", y);
+    let amplitude_factor = 200.0 / lights_app.shimmer_amplitude_percent;
     lights_app.values[lights_app.slider_count - 1] =
-        (lights_app.shimmer_master_value as f64 * (1.0 - ((y + 1.0) / 20.0))) as u8;
+        (lights_app.shimmer_master_value as f64 * (1.0 - ((y + 1.0) / amplitude_factor))) as u8;
     println!("{}", lights_app.values[lights_app.slider_count - 1]);
 }
 
