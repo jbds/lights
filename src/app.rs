@@ -32,6 +32,10 @@ pub struct LightsApp {
     pub is_fade_down: bool,
     pub short_text: String,
     pub is_blackout: bool,
+    pub is_shimmer: bool,
+    pub shimmer_instant: Instant,
+    pub shimmer_duration: Duration,
+    pub shimmer_master_value: u8,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -100,6 +104,10 @@ impl Default for LightsApp {
             short_text: "".to_string(),
             //long_text: "Last Scene of Pantomime".to_string(),
             is_blackout: false,
+            is_shimmer: true,
+            shimmer_instant: Instant::now(),
+            shimmer_duration: Duration::from_secs(0), //store elapsed time until time for repeat cycle
+            shimmer_master_value: 128,
         }
     }
 }
@@ -186,6 +194,19 @@ impl eframe::App for LightsApp {
             )
         } else {
             self.is_fade_down = false;
+        }
+
+        // shimmer
+        if self.is_shimmer == true {
+            // store current master value
+            //self.shimmer_master_value = self.values[self.slider_count - 1];
+            utilities::shimmer_master(self);
+            self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                self.values.clone(),
+                self.is_master_adjusteds.clone(),
+                self.slider_count,
+                self.is_blackout,
+            )
         }
     }
 }

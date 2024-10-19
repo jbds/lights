@@ -1,4 +1,6 @@
 use crate::LightsApp;
+use std::f64::consts::PI;
+use std::time::{Duration, Instant};
 
 pub fn recalculate_lights_adjusted_no_borrow(
     values: Vec<u8>,
@@ -56,6 +58,19 @@ pub fn decrement_master(lights_app: &mut LightsApp) {
     } else {
         lights_app.values[lights_app.slider_count - 1] -= dec5;
     }
+}
+
+pub fn shimmer_master(lights_app: &mut LightsApp) {
+    // reset cycle every 333ms - this number affects rate of shimmer
+    if lights_app.shimmer_instant.elapsed() > Duration::from_millis(333) {
+        lights_app.shimmer_instant = Instant::now();
+    }
+    let x = lights_app.shimmer_instant.elapsed().as_secs_f64() * 1000.0;
+    let y = f64::sin(x * PI * 2.0 / 333.0);
+    //println!("{}", y);
+    lights_app.values[lights_app.slider_count - 1] =
+        (lights_app.shimmer_master_value as f64 * (1.0 + (y / 20.0))) as u8;
+    println!("{}", lights_app.values[lights_app.slider_count - 1]);
 }
 
 pub fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
