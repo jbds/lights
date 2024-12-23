@@ -10,8 +10,13 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
         .show(ctx, |ui| {
             //ui.label("right_panel_placeholder");
 
-            ui.label("");
-            if ui.button("Edit Selected").clicked() {
+            //ui.label("");
+            ui.add_space(10.);
+            //if ui.button("Save Selected").clicked() {
+            if ui
+                .add_sized([170., 35.], egui::Button::new("Save Selected"))
+                .clicked()
+            {
                 // store raw values, NOT the adjusted ones!
                 let mut tweaked_values = lights_app.values.clone();
                 // force the master value to zero
@@ -23,25 +28,36 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 let _ = json_storage::write_to_file(&lights_app.light_records);
             }
 
-            ui.label("");
-            if ui.button("Del Selected").clicked() {
+            //ui.label("");
+            ui.add_space(10.);
+            //if ui.button("Del Selected").clicked() {
+            if ui
+                .add_sized([170., 35.], egui::Button::new("Del Selected"))
+                .clicked()
+            {
+                lights_app.show_confirmation_dialog = true;
                 // do nothing if length of lighting records is zero
-                if lights_app.light_records.len() != 0 {
-                    lights_app
-                        .light_records
-                        .remove(lights_app.light_records_index);
-                    // adjust index if end of records
-                    if lights_app.light_records.len() != 0
-                        && lights_app.light_records.len() == lights_app.light_records_index
-                    {
-                        lights_app.light_records_index -= 1;
-                    }
-                    let _ = json_storage::write_to_file(&lights_app.light_records);
-                }
+                // if lights_app.light_records.len() != 0 {
+                //     lights_app
+                //         .light_records
+                //         .remove(lights_app.light_records_index);
+                //     // adjust index if end of records
+                //     if lights_app.light_records.len() != 0
+                //         && lights_app.light_records.len() == lights_app.light_records_index
+                //     {
+                //         lights_app.light_records_index -= 1;
+                //     }
+                //     let _ = json_storage::write_to_file(&lights_app.light_records);
+                // }
             }
 
-            ui.label("");
-            if ui.button("Add After Selected").clicked {
+            //ui.label("");
+            ui.add_space(10.);
+            //if ui.button("Add After Selected").clicked {
+            if ui
+                .add_sized([170., 35.], egui::Button::new("Add After Selected"))
+                .clicked()
+            {
                 let u8s = vec![0; lights_app.slider_count];
                 if lights_app.light_records.len() == 0 {
                     lights_app.light_records.push(("Scene".to_string(), u8s));
@@ -54,30 +70,64 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 let _ = json_storage::write_to_file(&lights_app.light_records);
             }
 
-            ui.label("");
-            if ui.button("< Back").clicked {
-                // avoid subtract with overflow panic
-                if lights_app.light_records_index == 0 {
-                    lights_app.light_records_index = lights_app.light_records.len() - 1;
-                } else {
-                    lights_app.light_records_index =
-                        (lights_app.light_records_index - 1) % lights_app.light_records.len();
+            //ui.label("");
+            ui.add_space(10.);
+            ui.horizontal(|ui| {
+                //if ui.button("   Up   ").clicked {
+                if ui.add_sized([81., 35.], egui::Button::new("Up")).clicked() {
+                    // avoid subtract with overflow panic
+                    if lights_app.light_records_index == 0 {
+                        lights_app.light_records_index = lights_app.light_records.len() - 1;
+                    } else {
+                        lights_app.light_records_index =
+                            (lights_app.light_records_index - 1) % lights_app.light_records.len();
+                    }
+
+                    // set current values to this selected lights_record
+                    (lights_app.short_text, lights_app.values) =
+                        lights_app.light_records[lights_app.light_records_index].clone();
+                    // sync adjusted values
+                    lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                        lights_app.values.clone(),
+                        lights_app.is_master_adjusteds.clone(),
+                        lights_app.slider_count,
+                        lights_app.is_blackout,
+                    );
                 }
 
-                // set current values to this selected lights_record
-                (lights_app.short_text, lights_app.values) =
-                    lights_app.light_records[lights_app.light_records_index].clone();
-                // sync adjusted values
-                lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
-                    lights_app.values.clone(),
-                    lights_app.is_master_adjusteds.clone(),
-                    lights_app.slider_count,
-                    lights_app.is_blackout,
-                );
-            }
+                //if ui.button("Down").clicked {
+                if ui
+                    .add_sized([81., 35.], egui::Button::new("Down"))
+                    .clicked()
+                {
+                    // avoid add with overflow panic
+                    if lights_app.light_records_index == lights_app.light_records.len() - 1 {
+                        lights_app.light_records_index = 0;
+                    } else {
+                        lights_app.light_records_index =
+                            (lights_app.light_records_index + 1) % lights_app.light_records.len();
+                    }
 
-            ui.label("");
-            if ui.button("Fade Up").clicked() {
+                    // set current values to this selected lights_record
+                    (lights_app.short_text, lights_app.values) =
+                        lights_app.light_records[lights_app.light_records_index].clone();
+                    // sync adjusted values
+                    lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                        lights_app.values.clone(),
+                        lights_app.is_master_adjusteds.clone(),
+                        lights_app.slider_count,
+                        lights_app.is_blackout,
+                    );
+                }
+            });
+
+            //ui.label("");
+            ui.add_space(10.);
+            //if ui.button("Fade Up").clicked() {
+            if ui
+                .add_sized([170., 35.], egui::Button::new("Fade Up"))
+                .clicked()
+            {
                 lights_app.is_fade_down = false;
                 lights_app.is_fade_up = true;
             }
@@ -122,20 +172,46 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 );
             });
 
-            ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                //egui::warn_if_debug_build(ui);
-                ui.label("");
+            //ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
+            //egui::warn_if_debug_build(ui);
+            //ui.label("");
+            // BIG SPACE
+            ui.add_space(175.);
+            if ui
+                .add_sized([170., 35.], egui::Button::new("Fade Down"))
+                .clicked()
+            {
+                lights_app.is_fade_up = false;
+                lights_app.is_fade_down = true;
+            }
+
+            //ui.label("");
+            ui.add_space(10.);
+
+            ui.horizontal(|ui| {
                 if ui
-                    .add_sized([110., 80.], egui::Button::new("Fade Down"))
+                    .add_sized([80., 80.], egui::Button::new("Next\nSlow"))
                     .clicked()
                 {
-                    lights_app.is_fade_up = false;
-                    lights_app.is_fade_down = true;
+                    lights_app.light_records_index =
+                        (lights_app.light_records_index + 1) % lights_app.light_records.len();
+                    // set current values to this selected lights_record
+                    (lights_app.short_text, lights_app.values) =
+                        lights_app.light_records[lights_app.light_records_index].clone();
+
+                    lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                        lights_app.values.clone(),
+                        lights_app.is_master_adjusteds.clone(),
+                        lights_app.slider_count,
+                        lights_app.is_blackout,
+                    );
+                    // trigger an auto fade up
+                    lights_app.is_fade_down = false;
+                    lights_app.is_fade_up = true;
                 }
 
-                ui.label("");
                 if ui
-                    .add_sized([110., 80.], egui::Button::new("Next >"))
+                    .add_sized([82., 80.], egui::Button::new("Next\nFast"))
                     .clicked()
                 {
                     lights_app.light_records_index =
@@ -155,5 +231,6 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     lights_app.is_fade_up = true;
                 }
             });
+            //});
         });
 }

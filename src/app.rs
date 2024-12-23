@@ -38,6 +38,7 @@ pub struct LightsApp {
     pub shimmer_master_value: u8,
     pub shimmer_amplitude_percent: f64,
     pub shimmer_frequency_hertz: f64,
+    pub show_confirmation_dialog: bool,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -112,6 +113,7 @@ impl Default for LightsApp {
             shimmer_master_value: 0,
             shimmer_amplitude_percent: 60.0,
             shimmer_frequency_hertz: 2.0,
+            show_confirmation_dialog: false,
         }
     }
 }
@@ -209,6 +211,27 @@ impl eframe::App for LightsApp {
                 self.slider_count,
                 self.is_blackout,
             )
+        }
+
+        // dialog confirmation
+        if self.show_confirmation_dialog {
+            egui::Window::new("Do you want to quit?")
+                .collapsible(false)
+                .resizable(false)
+                .show(ctx, |ui| {
+                    ui.horizontal(|ui| {
+                        if ui.button("No").clicked() {
+                            //self.show_confirmation_dialog = false;
+                            //self.allowed_to_close = false;
+                        }
+
+                        if ui.button("Yes").clicked() {
+                            //self.show_confirmation_dialog = false;
+                            //self.allowed_to_close = true;
+                            //ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
+                        }
+                    });
+                });
         }
     }
 }
