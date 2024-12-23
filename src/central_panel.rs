@@ -48,5 +48,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 lights_app.is_blackout,
             )
         }
+        // sync the backing f64 for fading up and down from current value
+        //lights_app.master_value_f64 = lights_app.values[lights_app.slider_count - 1] as f64;
     });
 }
