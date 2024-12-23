@@ -17,15 +17,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 .add_sized([170., 35.], egui::Button::new("Save Selected"))
                 .clicked()
             {
-                // store raw values, NOT the adjusted ones!
-                let mut tweaked_values = lights_app.values.clone();
-                // force the master value to zero
-                tweaked_values[lights_app.values.len() - 1] = 0;
-                // adjust light records to match current values
-                lights_app.light_records[lights_app.light_records_index] =
-                    (lights_app.short_text.clone(), tweaked_values);
-                // persist the whole list of light records
-                let _ = json_storage::write_to_file(&lights_app.light_records);
+                lights_app.show_confirmation_dialog_title = String::from("SAVE SELECTED");
+                lights_app.show_confirmation_dialog = true;
             }
 
             //ui.label("");
@@ -35,20 +28,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 .add_sized([170., 35.], egui::Button::new("Del Selected"))
                 .clicked()
             {
+                lights_app.show_confirmation_dialog_title = String::from("DELETE SELECTED");
                 lights_app.show_confirmation_dialog = true;
-                // do nothing if length of lighting records is zero
-                // if lights_app.light_records.len() != 0 {
-                //     lights_app
-                //         .light_records
-                //         .remove(lights_app.light_records_index);
-                //     // adjust index if end of records
-                //     if lights_app.light_records.len() != 0
-                //         && lights_app.light_records.len() == lights_app.light_records_index
-                //     {
-                //         lights_app.light_records_index -= 1;
-                //     }
-                //     let _ = json_storage::write_to_file(&lights_app.light_records);
-                // }
             }
 
             //ui.label("");
@@ -58,16 +39,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 .add_sized([170., 35.], egui::Button::new("Add After Selected"))
                 .clicked()
             {
-                let u8s = vec![0; lights_app.slider_count];
-                if lights_app.light_records.len() == 0 {
-                    lights_app.light_records.push(("Scene".to_string(), u8s));
-                } else {
-                    lights_app.light_records.insert(
-                        lights_app.light_records_index + 1,
-                        ("Scene".to_string(), u8s),
-                    );
-                }
-                let _ = json_storage::write_to_file(&lights_app.light_records);
+                lights_app.show_confirmation_dialog_title = String::from("ADD AFTER SELECTED");
+                lights_app.show_confirmation_dialog = true;
             }
 
             //ui.label("");

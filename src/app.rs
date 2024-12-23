@@ -4,6 +4,9 @@ use crate::left_panel;
 use crate::right_panel;
 use crate::top_panel;
 use crate::utilities;
+use crate::utilities::add_after_selected;
+use crate::utilities::FaderSpeed;
+use crate::utilities::{delete_selected, save_selected};
 
 #[cfg(target_arch = "aarch64")]
 use dmx::{self, DmxTransmitter};
@@ -39,6 +42,8 @@ pub struct LightsApp {
     pub shimmer_amplitude_percent: f64,
     pub shimmer_frequency_hertz: f64,
     pub show_confirmation_dialog: bool,
+    pub show_confirmation_dialog_title: String,
+    pub master_value_f64: f64,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -114,6 +119,8 @@ impl Default for LightsApp {
             shimmer_amplitude_percent: 60.0,
             shimmer_frequency_hertz: 2.0,
             show_confirmation_dialog: false,
+            show_confirmation_dialog_title: String::from("CONFIRM"),
+            master_value_f64: 0.0,
         }
     }
 }
@@ -178,7 +185,7 @@ impl eframe::App for LightsApp {
 
         // increment the master dimmer, beware of overflow, clamp to 255 max
         if (self.values[self.slider_count - 1] < 255) && (self.is_fade_up == true) {
-            utilities::increment_master(self);
+            utilities::increment_master(self, FaderSpeed::Slow);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),
                 self.is_master_adjusteds.clone(),
@@ -191,7 +198,7 @@ impl eframe::App for LightsApp {
 
         // decrement the master dimmer, clamp to zero minimum
         if self.values[self.slider_count - 1] > 0 && self.is_fade_down == true {
-            utilities::decrement_master(self);
+            utilities::decrement_master(self, FaderSpeed::Slow);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),
                 self.is_master_adjusteds.clone(),
@@ -215,23 +222,32 @@ impl eframe::App for LightsApp {
 
         // dialog confirmation
         if self.show_confirmation_dialog {
-            egui::Window::new("Do you want to quit?")
-                .collapsible(false)
-                .resizable(false)
-                .show(ctx, |ui| {
-                    ui.horizontal(|ui| {
-                        if ui.button("No").clicked() {
-                            //self.show_confirmation_dialog = false;
-                            //self.allowed_to_close = false;
-                        }
+            egui::Window::new(format!(
+                "Do you want to {}?",
+                self.show_confirmation_dialog_title
+            ))
+            .collapsible(false)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.horizontal(|ui| {
+                    if ui.button("No").clicked() {
+                        self.show_confirmation_dialog = false;
+                    }
 
-                        if ui.button("Yes").clicked() {
-                            //self.show_confirmation_dialog = false;
-                            //self.allowed_to_close = true;
-                            //ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
+                    if ui.button("Yes").clicked() {
+                        self.show_confirmation_dialog = false;
+                        // if self.show_confirmation_dialog_title == "DELETE SELECTED" {
+                        //     delete_selected(self);
+                        // }
+                        match self.show_confirmation_dialog_title.as_str() {
+                            "DELETE SELECTED" => delete_selected(self),
+                            "SAVE SELECTED" => save_selected(self),
+                            "ADD AFTER SELECTED" => add_after_selected(self),
+                            _ => (),
                         }
-                    });
+                    }
                 });
+            });
         }
     }
 }
