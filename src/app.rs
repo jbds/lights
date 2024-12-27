@@ -1,8 +1,8 @@
-use crate::central_panel;
 use crate::json_storage;
-use crate::left_panel;
-use crate::right_panel;
-use crate::top_panel;
+use crate::panels::central_panel;
+use crate::panels::left_panel;
+use crate::panels::right_panel;
+use crate::panels::top_panel;
 use crate::utilities;
 use crate::utilities::add_after_selected;
 use crate::utilities::FaderSpeed;
