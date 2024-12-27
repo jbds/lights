@@ -34,11 +34,14 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
         // last slider, the master dimmer, is a special case UI layout
         ui.label("     ");
         let resp2 = ui.add(
-            egui::Slider::new(&mut lights_app.values[lights_app.slider_count - 1], 0..=255)
-                .integer()
-                .text("Master")
-                //.orientation(egui::SliderOrientation::Vertical),
-                .orientation(egui::SliderOrientation::Horizontal),
+            egui::Slider::new(
+                &mut lights_app.values[lights_app.slider_count - 1],
+                0.0..=255.0,
+            )
+            .integer()
+            .text("Master")
+            //.orientation(egui::SliderOrientation::Vertical),
+            .orientation(egui::SliderOrientation::Horizontal),
         );
         if resp2.changed() == true {
             lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(

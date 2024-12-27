@@ -9,18 +9,17 @@ pub enum FaderSpeed {
 }
 
 pub fn recalculate_lights_adjusted_no_borrow(
-    values: Vec<u8>,
+    values: Vec<f64>,
     is_master_adjusteds: Vec<bool>,
     slider_count: usize,
     is_blackout: bool,
-) -> Vec<u8> {
+) -> Vec<f64> {
     values
         .iter()
         .enumerate()
         .map(|(i, &v)| {
             if is_master_adjusteds[i] == true {
-                ((f64::from(v) * f64::from(values[slider_count - 1]) * f64::from(!is_blackout))
-                    / 255.0) as u8
+                v * values[slider_count - 1] * f64::from(!is_blackout) / 255.0
             } else {
                 v
             }
@@ -64,23 +63,17 @@ pub fn increment_master(lights_app: &mut LightsApp, fader_speed: FaderSpeed) {
         FaderSpeed::Fast => 8.0,
         FaderSpeed::Slow => 2.0,
     };
-    //let val = lights_app.values[lights_app.slider_count - 1] as f64;
-    let val = lights_app.master_value_f64;
+    let val = lights_app.values[lights_app.slider_count - 1];
     if val > 255.0 - inc4 {
-        lights_app.values[lights_app.slider_count - 1] = 255.0 as u8;
-        lights_app.master_value_f64 = 255.0;
+        lights_app.values[lights_app.slider_count - 1] = 255.0;
     } else if val < 46.0 {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 + inc1) as u8;
-        lights_app.master_value_f64 += inc1;
+        lights_app.values[lights_app.slider_count - 1] += inc1;
     } else if val < 84.0 {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 + inc2) as u8;
-        lights_app.master_value_f64 += inc2;
+        lights_app.values[lights_app.slider_count - 1] += inc2;
     } else if val < 143.0 {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 + inc3) as u8;
-        lights_app.master_value_f64 += inc3;
+        lights_app.values[lights_app.slider_count - 1] += inc3;
     } else {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 + inc4) as u8;
-        lights_app.master_value_f64 += inc4;
+        lights_app.values[lights_app.slider_count - 1] += inc4;
     }
 }
 
@@ -101,23 +94,17 @@ pub fn decrement_master(lights_app: &mut LightsApp, fader_speed: FaderSpeed) {
         FaderSpeed::Fast => 1.0,
         FaderSpeed::Slow => 0.25,
     };
-    //let val = lights_app.values[lights_app.slider_count - 1];
-    let val = lights_app.master_value_f64;
+    let val = lights_app.values[lights_app.slider_count - 1];
     if val < 0.0 + dec1 {
-        lights_app.values[lights_app.slider_count - 1] = 0.0 as u8;
-        lights_app.master_value_f64 = 0.0;
+        lights_app.values[lights_app.slider_count - 1] = 0.0;
     } else if val < 46.0 {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 - dec1) as u8;
-        lights_app.master_value_f64 -= dec1;
+        lights_app.values[lights_app.slider_count - 1] -= dec1;
     } else if val < 84.0 {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 - dec2) as u8;
-        lights_app.master_value_f64 -= dec2;
+        lights_app.values[lights_app.slider_count - 1] -= dec2;
     } else if val < 143.0 {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 - dec3) as u8;
-        lights_app.master_value_f64 -= dec3;
+        lights_app.values[lights_app.slider_count - 1] -= dec3;
     } else {
-        lights_app.values[lights_app.slider_count - 1] = (lights_app.master_value_f64 - dec4) as u8;
-        lights_app.master_value_f64 -= dec4;
+        lights_app.values[lights_app.slider_count - 1] -= dec4;
     }
 }
 
@@ -132,7 +119,7 @@ pub fn shimmer_master(lights_app: &mut LightsApp) {
     //println!("{}", y);
     let amplitude_factor = 200.0 / lights_app.shimmer_amplitude_percent;
     lights_app.values[lights_app.slider_count - 1] =
-        (lights_app.shimmer_master_value as f64 * (1.0 - ((y + 1.0) / amplitude_factor))) as u8;
+        lights_app.shimmer_master_value * (1.0 - ((y + 1.0) / amplitude_factor));
     println!("{}", lights_app.values[lights_app.slider_count - 1]);
 }
 
@@ -142,7 +129,7 @@ pub fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -
         ui.label("     ");
     }
     ui.add(
-        egui::Slider::new(&mut lights_app.values[count], 0..=255)
+        egui::Slider::new(&mut lights_app.values[count], 0.0..=255.0)
             .integer()
             .text(lights_app.labels[count].clone())
             //.orientation(egui::SliderOrientation::Vertical),
@@ -170,7 +157,7 @@ pub fn save_selected(lights_app: &mut LightsApp) {
     // store raw values, NOT the adjusted ones!
     let mut tweaked_values = lights_app.values.clone();
     // force the master value to zero
-    tweaked_values[lights_app.values.len() - 1] = 0;
+    tweaked_values[lights_app.values.len() - 1] = 0.0;
     // adjust light records to match current values
     lights_app.light_records[lights_app.light_records_index] =
         (lights_app.short_text.clone(), tweaked_values);
@@ -179,7 +166,7 @@ pub fn save_selected(lights_app: &mut LightsApp) {
 }
 
 pub fn add_after_selected(lights_app: &mut LightsApp) {
-    let u8s = vec![0; lights_app.slider_count];
+    let u8s = vec![0.0; lights_app.slider_count];
     if lights_app.light_records.len() == 0 {
         lights_app.light_records.push(("Scene".to_string(), u8s));
     } else {

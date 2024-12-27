@@ -21,16 +21,17 @@ use std::time::{Duration, Instant};
 pub struct LightsApp {
     //#[serde(skip)] // This how you opt-out of serialization of a field
     pub slider_count: usize,
-    pub values: Vec<u8>, //stores the current array of light values including master dimmer
+    //pub values: Vec<u8>, //stores the current array of light values including master dimmer
+    pub values: Vec<f64>, // the master dimmer needs to use f64 resolution, u8 is to granular
     pub is_master_adjusteds: Vec<bool>,
     pub labels: Vec<String>,
-    pub values_adjusted: Vec<u8>,
+    pub values_adjusted: Vec<f64>,
     pub instant: Instant,   // we need this to check timing
     pub duration: Duration, // ditto
     #[cfg(target_arch = "aarch64")]
     pub dmx_port: dmx_serial::posix::TTYPort, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
-    pub light_records: Vec<(String, Vec<u8>)>, // a list of scene names plus all the slider values before any adjustment by the master slider and master alaways zero
-    pub light_records_index: usize,            // initialized to zero
+    pub light_records: Vec<(String, Vec<f64>)>, // a list of scene names plus all the slider values before any adjustment by the master slider and master alaways zero
+    pub light_records_index: usize,             // initialized to zero
     pub is_fade_up: bool,
     pub is_fade_down: bool,
     pub short_text: String,
@@ -38,7 +39,7 @@ pub struct LightsApp {
     pub is_shimmer: bool,
     pub shimmer_instant: Instant,
     pub shimmer_duration: Duration,
-    pub shimmer_master_value: u8,
+    pub shimmer_master_value: f64,
     pub shimmer_amplitude_percent: f64,
     pub shimmer_frequency_hertz: f64,
     pub show_confirmation_dialog: bool,
@@ -65,7 +66,7 @@ impl Default for LightsApp {
         Self {
             slider_count: slider_count,
             // set all sliders to zero
-            values: vec![0; slider_count],
+            values: vec![0.0; slider_count],
             // make sure list has length equal to slider_count
             is_master_adjusteds: vec![
                 true, true, true, true, true, true, true, true, true, true, true, true, false,
@@ -95,7 +96,7 @@ impl Default for LightsApp {
                 "Wht".to_string(),
                 "Master".to_string(),
             ],
-            values_adjusted: vec![0; slider_count],
+            values_adjusted: vec![0.0; slider_count],
             instant: Instant::now(), // func is only called once, so this value will be fixed
             duration: Duration::from_secs(0), // store elapsed time on each screen repaint
             #[cfg(target_arch = "aarch64")]
@@ -115,7 +116,7 @@ impl Default for LightsApp {
             is_shimmer: false,
             shimmer_instant: Instant::now(),
             shimmer_duration: Duration::from_secs(0), //store elapsed time until time for repeat cycle
-            shimmer_master_value: 0,
+            shimmer_master_value: 0.0,
             shimmer_amplitude_percent: 60.0,
             shimmer_frequency_hertz: 2.0,
             show_confirmation_dialog: false,
@@ -177,14 +178,16 @@ impl eframe::App for LightsApp {
             // }
             // send a dmx packet, &Vec<u8> can be coerced to &[u8]
             #[cfg(target_arch = "aarch64")]
-            let _ = self.dmx_port.send_dmx_packet(&self.values_adjusted);
+            // TO DO - sort out conversion from &Vec<f64> to &[u8]
+            let _a = 1;
+            //let _ = self.dmx_port.send_dmx_packet(&self.values_adjusted);
             self.duration = self.instant.elapsed();
         } else {
             // leave duration as is to accumulate time
         }
 
         // increment the master dimmer, beware of overflow, clamp to 255 max
-        if (self.values[self.slider_count - 1] < 255) && (self.is_fade_up == true) {
+        if (self.values[self.slider_count - 1] < 255.0) && (self.is_fade_up == true) {
             utilities::increment_master(self, FaderSpeed::Slow);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),
@@ -197,7 +200,7 @@ impl eframe::App for LightsApp {
         }
 
         // decrement the master dimmer, clamp to zero minimum
-        if self.values[self.slider_count - 1] > 0 && self.is_fade_down == true {
+        if self.values[self.slider_count - 1] > 0.0 && self.is_fade_down == true {
             utilities::decrement_master(self, FaderSpeed::Slow);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),
