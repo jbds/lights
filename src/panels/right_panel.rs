@@ -97,9 +97,10 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             ui.add_space(10.);
             //if ui.button("Fade Up").clicked() {
             if ui
-                .add_sized([170., 35.], egui::Button::new("Fade Up"))
+                .add_sized([170., 35.], egui::Button::new("Fade Up Fast"))
                 .clicked()
             {
+                lights_app.fader_speed = 1.0;
                 lights_app.is_fade_down = false;
                 lights_app.is_fade_up = true;
             }
@@ -150,9 +151,10 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             // BIG SPACE
             ui.add_space(175.);
             if ui
-                .add_sized([170., 35.], egui::Button::new("Fade Down"))
+                .add_sized([170., 35.], egui::Button::new("Fade Down Fast"))
                 .clicked()
             {
+                lights_app.fader_speed = 1.0;
                 lights_app.is_fade_up = false;
                 lights_app.is_fade_down = true;
             }
@@ -177,7 +179,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                         lights_app.slider_count,
                         lights_app.is_blackout,
                     );
-                    // trigger an auto fade up
+                    // trigger an auto fade up slow
+                    lights_app.fader_speed = 0.1;
                     lights_app.is_fade_down = false;
                     lights_app.is_fade_up = true;
                 }
@@ -198,7 +201,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                         lights_app.slider_count,
                         lights_app.is_blackout,
                     );
-                    // trigger an auto fade up
+                    // trigger an auto fade up fast
+                    lights_app.fader_speed = 1.0;
                     lights_app.is_fade_down = false;
                     lights_app.is_fade_up = true;
                 }

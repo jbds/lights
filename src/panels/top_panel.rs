@@ -24,9 +24,9 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             ));
             //ui.label(format!("{:?}", lights_app.values));
             //ui.add_space(16.0);
-            ui.label(format!("{:?}", lights_app.values_adjusted));
-            ui.add_space(16.0);
-            ui.label(format!("{:?}", lights_app.master_value_f64));
+            //ui.label(format!("{:?}", lights_app.values_adjusted));
+            //ui.add_space(16.0);
+            ui.label(format!("{:?}", lights_app.array_of_u8));
         });
     });
 }

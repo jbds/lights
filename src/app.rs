@@ -5,7 +5,6 @@ use crate::panels::right_panel;
 use crate::panels::top_panel;
 use crate::utilities;
 use crate::utilities::add_after_selected;
-use crate::utilities::FaderSpeed;
 use crate::utilities::{delete_selected, save_selected};
 
 #[cfg(target_arch = "aarch64")]
@@ -44,7 +43,8 @@ pub struct LightsApp {
     pub shimmer_frequency_hertz: f64,
     pub show_confirmation_dialog: bool,
     pub show_confirmation_dialog_title: String,
-    pub master_value_f64: f64,
+    pub array_of_u8: [u8; 20],
+    pub fader_speed: f64,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -121,7 +121,8 @@ impl Default for LightsApp {
             shimmer_frequency_hertz: 2.0,
             show_confirmation_dialog: false,
             show_confirmation_dialog_title: String::from("CONFIRM"),
-            master_value_f64: 0.0,
+            array_of_u8: [0; 20],
+            fader_speed: 1.0,
         }
     }
 }
@@ -140,7 +141,23 @@ impl LightsApp {
 
         configure_text_styles(&cc.egui_ctx);
 
-        Default::default()
+        let mut la: LightsApp = Default::default();
+
+        // although light_records_index is defaulted to zero, we still need o mimic a clicked() event
+        // set current values to this selected lights_record
+        let temp = la.light_records[0].clone();
+        la.values = temp.1;
+        // set scene desc to this selected record
+        la.short_text = temp.0;
+        //qualify by master dimmer
+        la.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+            la.values.clone(),
+            la.is_master_adjusteds.clone(),
+            la.slider_count,
+            la.is_blackout,
+        );
+
+        la
     }
 }
 
@@ -176,11 +193,19 @@ impl eframe::App for LightsApp {
             // for vals in self.light_records.iter() {
             //     println!("vals: {:?}", &vals);
             // }
+            //const LENGTH_OF_U8: usize = 20;
+            //let mut array_of_u8 = [0; LENGTH_OF_U8];
+            for i in 0..=19 {
+                self.array_of_u8[i] = self.values_adjusted[i] as u8;
+            }
+            println!(
+                "dmx u8 {:?} {:?}",
+                &self.array_of_u8,
+                &self.instant.elapsed()
+            );
             // send a dmx packet, &Vec<u8> can be coerced to &[u8]
             #[cfg(target_arch = "aarch64")]
-            // TO DO - sort out conversion from &Vec<f64> to &[u8]
-            let _a = 1;
-            //let _ = self.dmx_port.send_dmx_packet(&self.values_adjusted);
+            let _ = self.dmx_port.send_dmx_packet(&self.array_of_u8);
             self.duration = self.instant.elapsed();
         } else {
             // leave duration as is to accumulate time
@@ -188,7 +213,7 @@ impl eframe::App for LightsApp {
 
         // increment the master dimmer, beware of overflow, clamp to 255 max
         if (self.values[self.slider_count - 1] < 255.0) && (self.is_fade_up == true) {
-            utilities::increment_master(self, FaderSpeed::Slow);
+            utilities::increment_master(self);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),
                 self.is_master_adjusteds.clone(),
@@ -201,7 +226,7 @@ impl eframe::App for LightsApp {
 
         // decrement the master dimmer, clamp to zero minimum
         if self.values[self.slider_count - 1] > 0.0 && self.is_fade_down == true {
-            utilities::decrement_master(self, FaderSpeed::Slow);
+            utilities::decrement_master(self);
             self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                 self.values.clone(),
                 self.is_master_adjusteds.clone(),
