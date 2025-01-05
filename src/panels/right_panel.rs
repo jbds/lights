@@ -145,11 +145,15 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 );
             });
 
-            //ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-            //egui::warn_if_debug_build(ui);
-            //ui.label("");
+            ui.add_space(10.);
+            if ui
+                .add_sized([170., 35.], egui::Button::new("Next Merge"))
+                .clicked()
+            {}
+
             // BIG SPACE
-            ui.add_space(175.);
+            ui.add_space(150.);
+
             if ui
                 .add_sized([170., 35.], egui::Button::new("Fade Down Fast"))
                 .clicked()
@@ -164,7 +168,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 
             ui.horizontal(|ui| {
                 if ui
-                    .add_sized([80., 80.], egui::Button::new("Next\nSlow"))
+                    .add_sized([81., 80.], egui::Button::new("Next\nSlow"))
                     .clicked()
                 {
                     lights_app.light_records_index =
@@ -186,7 +190,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 }
 
                 if ui
-                    .add_sized([82., 80.], egui::Button::new("Next\nFast"))
+                    .add_sized([81., 80.], egui::Button::new("Next\nFast"))
                     .clicked()
                 {
                     lights_app.light_records_index =

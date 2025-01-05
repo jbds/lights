@@ -3,11 +3,6 @@ use crate::LightsApp;
 use std::f64::consts::PI;
 use std::time::{Duration, Instant};
 
-// pub enum FaderSpeed {
-//     Fast(f64),
-//     Slow(f64),
-// }
-
 pub fn recalculate_lights_adjusted_no_borrow(
     values: Vec<f64>,
     is_master_adjusteds: Vec<bool>,
@@ -27,42 +22,7 @@ pub fn recalculate_lights_adjusted_no_borrow(
         .collect()
 }
 
-// pub fn increment_master(lights_app: &mut LightsApp, fader_speed: FaderSpeed) {
-//     let inc1 = 1;
-//     let inc2 = 2;
-//     let inc3 = 4;
-//     let inc5 = 8;
-//     let val = lights_app.values[lights_app.slider_count - 1];
-//     if val > 255 - inc5 {
-//         lights_app.values[lights_app.slider_count - 1] = 255
-//     } else if val < 46 {
-//         lights_app.values[lights_app.slider_count - 1] += inc1;
-//     } else if val < 84 {
-//         lights_app.values[lights_app.slider_count - 1] += inc2;
-//     } else if val < 143 {
-//         lights_app.values[lights_app.slider_count - 1] += inc3;
-//     } else {
-//         lights_app.values[lights_app.slider_count - 1] += inc5;
-//     }
-// }
-
 pub fn increment_master(lights_app: &mut LightsApp) {
-    // let inc1 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f,
-    //     FaderSpeed::Slow(s) => s,
-    // };
-    // let inc2 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f * 2.0,
-    //     FaderSpeed::Slow(s) => s * 2.0,
-    // };
-    // let inc3 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f * 4.0,
-    //     FaderSpeed::Slow(s) => s * 4.0,
-    // };
-    // let inc4 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f * 8.0,
-    //     FaderSpeed::Slow(s) => s * 8.0,
-    // };
     let inc1 = lights_app.fader_speed;
     let inc2 = lights_app.fader_speed * 2.0;
     let inc3 = lights_app.fader_speed * 4.0;
@@ -82,22 +42,6 @@ pub fn increment_master(lights_app: &mut LightsApp) {
 }
 
 pub fn decrement_master(lights_app: &mut LightsApp) {
-    // let dec4 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f * 8.0,
-    //     FaderSpeed::Slow(s) => s * 8.0,
-    // };
-    // let dec3 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f * 4.0,
-    //     FaderSpeed::Slow(s) => s * 4.0,
-    // };
-    // let dec2 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f * 2.0,
-    //     FaderSpeed::Slow(s) => s * 2.0,
-    // };
-    // let dec1 = match fader_speed {
-    //     FaderSpeed::Fast(f) => f,
-    //     FaderSpeed::Slow(s) => s,
-    // };
     let dec1 = lights_app.fader_speed;
     let dec2 = lights_app.fader_speed * 2.0;
     let dec3 = lights_app.fader_speed * 4.0;
