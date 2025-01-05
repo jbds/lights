@@ -184,7 +184,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                         lights_app.is_blackout,
                     );
                     // trigger an auto fade up slow
-                    lights_app.fader_speed = 0.1;
+                    lights_app.fader_speed = 0.3;
                     lights_app.is_fade_down = false;
                     lights_app.is_fade_up = true;
                 }
