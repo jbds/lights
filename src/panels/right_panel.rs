@@ -152,10 +152,10 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             {}
 
             // BIG SPACE
-            ui.add_space(150.);
+            ui.add_space(115.);
 
             if ui
-                .add_sized([170., 35.], egui::Button::new("Fade Down Fast"))
+                .add_sized([170., 70.], egui::Button::new("Fade Down Fast"))
                 .clicked()
             {
                 lights_app.fader_speed = 1.0;
