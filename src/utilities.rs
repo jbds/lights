@@ -129,3 +129,14 @@ pub fn add_after_selected(lights_app: &mut LightsApp) {
     }
     let _ = json_storage::write_to_file(&lights_app.light_records);
 }
+
+pub fn recalculate_ultra_violet(lights_app: &mut LightsApp) {
+    // uv ON OFF
+    for i in 20..=23 {
+        if lights_app.is_ultra_violet && !lights_app.is_blackout {
+            lights_app.array_of_u8[i] = 255;
+        } else {
+            lights_app.array_of_u8[i] = 0;
+        }
+    }
+}

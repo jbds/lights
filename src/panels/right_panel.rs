@@ -105,6 +105,14 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 lights_app.is_fade_up = true;
             }
 
+            ui.add_space(20.);
+            if ui
+                .checkbox(&mut lights_app.is_ultra_violet, "Ultra Violet")
+                .clicked()
+            {
+                utilities::recalculate_ultra_violet(lights_app);
+            }
+
             ui.label("");
             if ui
                 .checkbox(&mut lights_app.is_blackout, "Blackout")
@@ -116,6 +124,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     lights_app.slider_count,
                     lights_app.is_blackout,
                 );
+                utilities::recalculate_ultra_violet(lights_app);
             }
 
             ui.label("");
@@ -152,7 +161,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             {}
 
             // BIG SPACE
-            ui.add_space(115.);
+            ui.add_space(85.);
 
             if ui
                 .add_sized([170., 70.], egui::Button::new("Fade Down Fast"))

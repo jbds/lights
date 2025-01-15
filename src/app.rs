@@ -43,8 +43,9 @@ pub struct LightsApp {
     pub shimmer_frequency_hertz: f64,
     pub show_confirmation_dialog: bool,
     pub show_confirmation_dialog_title: String,
-    pub array_of_u8: [u8; 20],
+    pub array_of_u8: [u8; 24],
     pub fader_speed: f64,
+    pub is_ultra_violet: bool,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -121,8 +122,9 @@ impl Default for LightsApp {
             shimmer_frequency_hertz: 2.0,
             show_confirmation_dialog: false,
             show_confirmation_dialog_title: String::from("CONFIRM"),
-            array_of_u8: [0; 20],
+            array_of_u8: [0; 24],
             fader_speed: 1.0,
+            is_ultra_violet: false,
         }
     }
 }
@@ -198,6 +200,10 @@ impl eframe::App for LightsApp {
             for i in 0..=19 {
                 self.array_of_u8[i] = self.values_adjusted[i] as u8;
             }
+            // // uv ON OFF
+            // for i in 20..=23 {
+            //     self.array_of_u8[i] = 0;
+            // }
             println!(
                 "dmx u8 {:?} {:?}",
                 &self.array_of_u8,
