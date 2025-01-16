@@ -5,7 +5,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
     egui::CentralPanel::default().show(ctx, |ui| {
         //ui.label("central_panel_placeholder");
 
-        ui.label("");
+        //ui.label("");
+        ui.add_space(5.);
         ui.horizontal(|ui| {
             let _response = ui.add(
                 egui::TextEdit::singleline(&mut lights_app.short_text).desired_width(f32::INFINITY),

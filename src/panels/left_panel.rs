@@ -7,7 +7,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
         .show(ctx, |ui| {
             //ui.label("left_panel_placeholder");
 
-            ui.label("");
+            ui.add_space(10.);
             let mut i = 0;
             for vals in lights_app.light_records.iter() {
                 // display all records
@@ -39,8 +39,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 
             // standard egui/eframe info
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
+                ui.add_space(10.);
                 powered_by_egui_and_eframe(ui);
-                egui::warn_if_debug_build(ui);
             });
         });
 }
@@ -48,7 +48,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
     ui.horizontal(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
-        ui.label(format!("Lights version {}     ", env!("CARGO_PKG_VERSION")));
+        egui::warn_if_debug_build(ui);
+        ui.label(format!("    Lights v{}  ", env!("CARGO_PKG_VERSION")));
         ui.label("Powered by ");
         ui.hyperlink_to("egui", "https://github.com/emilk/egui");
         ui.label(" and ");

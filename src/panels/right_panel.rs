@@ -156,18 +156,66 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 
             ui.add_space(10.);
             if ui
-                .add_sized([170., 35.], egui::Button::new("Next Merge"))
+                .add_sized([170., 35.], egui::Button::new("Next Jump"))
                 .clicked()
-            {}
+            {
+                lights_app.light_records_index =
+                    (lights_app.light_records_index + 1) % lights_app.light_records.len();
+                // set current values to this selected lights_record
+                (lights_app.short_text, lights_app.values) =
+                    lights_app.light_records[lights_app.light_records_index].clone();
+
+                // force no fade up or down, and then master to full
+                lights_app.is_fade_up = false;
+                lights_app.is_fade_down = false;
+                lights_app.values[lights_app.slider_count - 1] = 255.0;
+
+                lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                    lights_app.values.clone(),
+                    lights_app.is_master_adjusteds.clone(),
+                    lights_app.slider_count,
+                    lights_app.is_blackout,
+                );
+            }
+
+            ui.add_space(10.);
+            if ui
+                .add_sized([170., 35.], egui::Button::new("Previous Jump"))
+                .clicked()
+            {
+                // avoid subtract with overflow panic
+                if lights_app.light_records_index == 0 {
+                    lights_app.light_records_index = lights_app.light_records.len() - 1;
+                } else {
+                    lights_app.light_records_index =
+                        (lights_app.light_records_index - 1) % lights_app.light_records.len();
+                }
+
+                // set current values to this selected lights_record
+                (lights_app.short_text, lights_app.values) =
+                    lights_app.light_records[lights_app.light_records_index].clone();
+
+                // force no fade up or down, and then master to full
+                lights_app.is_fade_up = false;
+                lights_app.is_fade_down = false;
+                lights_app.values[lights_app.slider_count - 1] = 255.0;
+
+                lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                    lights_app.values.clone(),
+                    lights_app.is_master_adjusteds.clone(),
+                    lights_app.slider_count,
+                    lights_app.is_blackout,
+                );
+            }
 
             // BIG SPACE
-            ui.add_space(85.);
+            ui.add_space(10.);
 
             if ui
                 .add_sized([170., 70.], egui::Button::new("Fade Down Fast"))
                 .clicked()
             {
-                lights_app.fader_speed = 1.0;
+                lights_app.fader_speed = 2.0;
                 lights_app.is_fade_up = false;
                 lights_app.is_fade_down = true;
             }
@@ -177,7 +225,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 
             ui.horizontal(|ui| {
                 if ui
-                    .add_sized([81., 80.], egui::Button::new("Next\nSlow"))
+                    .add_sized([81., 70.], egui::Button::new("Next\nSlow"))
                     .clicked()
                 {
                     lights_app.light_records_index =
@@ -199,7 +247,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 }
 
                 if ui
-                    .add_sized([81., 80.], egui::Button::new("Next\nFast"))
+                    .add_sized([81., 70.], egui::Button::new("Next\nFast"))
                     .clicked()
                 {
                     lights_app.light_records_index =
@@ -215,7 +263,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                         lights_app.is_blackout,
                     );
                     // trigger an auto fade up fast
-                    lights_app.fader_speed = 1.0;
+                    lights_app.fader_speed = 2.0;
                     lights_app.is_fade_down = false;
                     lights_app.is_fade_up = true;
                 }
