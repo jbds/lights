@@ -53,9 +53,9 @@ fn configure_text_styles(ctx: &egui::Context) {
     style.text_styles = [
         (Heading, FontId::new(30.0, Proportional)),
         (Body, FontId::new(14.0, Proportional)),
-        (Monospace, FontId::new(18.0, Proportional)),
-        (Button, FontId::new(18.0, Proportional)),
-        (Small, FontId::new(18.0, Proportional)),
+        (Monospace, FontId::new(14.0, Proportional)),
+        (Button, FontId::new(16.0, Proportional)),
+        (Small, FontId::new(14.0, Proportional)),
     ]
     .into();
     ctx.set_style(style);
@@ -123,7 +123,7 @@ impl Default for LightsApp {
             show_confirmation_dialog: false,
             show_confirmation_dialog_title: String::from("CONFIRM"),
             array_of_u8: [0; 24],
-            fader_speed: 1.0,
+            fader_speed: 2.0,
             is_ultra_violet: false,
         }
     }
