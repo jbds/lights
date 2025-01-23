@@ -105,14 +105,6 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 lights_app.is_fade_up = true;
             }
 
-            ui.add_space(20.);
-            if ui
-                .checkbox(&mut lights_app.is_ultra_violet, "Ultra Violet")
-                .clicked()
-            {
-                utilities::recalculate_ultra_violet(lights_app);
-            }
-
             ui.label("");
             if ui
                 .checkbox(&mut lights_app.is_blackout, "Blackout")
@@ -127,12 +119,21 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 utilities::recalculate_ultra_violet(lights_app);
             }
 
+            ui.add_space(20.);
+            if ui
+                .checkbox(&mut lights_app.is_ultra_violet, "Ultra Violet")
+                .clicked()
+            {
+                utilities::recalculate_ultra_violet(lights_app);
+            }
+
             ui.label("");
             if ui.checkbox(&mut lights_app.is_shimmer, "Shimmer").clicked() {
                 // store current master value
                 lights_app.shimmer_master_value = lights_app.values[lights_app.slider_count - 1];
             }
 
+            ui.add_space(20.);
             // set the 'width' (height) of the sliders
             ui.spacing_mut().slider_width = 100.0;
             ui.horizontal(|ui| {

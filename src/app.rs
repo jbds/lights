@@ -70,7 +70,7 @@ impl Default for LightsApp {
             values: vec![0.0; slider_count],
             // make sure list has length equal to slider_count
             is_master_adjusteds: vec![
-                true, true, true, true, true, true, true, true, true, true, true, true, false,
+                true, true, true, true, true, true, true, true, true, true, true, false, false,
                 false, false, false, false, false, false, false, false,
             ],
             // make sure list has length equal to slider_count
