@@ -71,7 +71,7 @@ impl Default for LightsApp {
             // make sure list has length equal to slider_count
             is_master_adjusteds: vec![
                 true, true, true, true, true, true, true, true, true, true, true, true, false,
-                false, false, false, true, true, true, true, false,
+                false, false, false, false, false, false, false, false,
             ],
             // make sure list has length equal to slider_count
             labels: vec![
@@ -118,8 +118,8 @@ impl Default for LightsApp {
             shimmer_instant: Instant::now(),
             shimmer_duration: Duration::from_secs(0), //store elapsed time until time for repeat cycle
             shimmer_master_value: 0.0,
-            shimmer_amplitude_percent: 60.0,
-            shimmer_frequency_hertz: 2.0,
+            shimmer_amplitude_percent: 13.0,
+            shimmer_frequency_hertz: 0.8,
             show_confirmation_dialog: false,
             show_confirmation_dialog_title: String::from("CONFIRM"),
             array_of_u8: [0; 24],
