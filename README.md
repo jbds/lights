@@ -7,5 +7,5 @@ cargo build - from scratch for both targets 1m 45s
 cargo run  --target=x86_64-unknown-linux-gnu for running on x86 dev laptop
 
 To copy executable to raspi:
-jonb@ryzen7040:~/rs/lights/target/aarch64-unknown-linux-gnu/debug$ scp lights jonb@raspi:/home/jonb/rsx/
+jonb@ryzen7040:~/rs/lights/target/aarch64-unknown-linux-gnu/debug$ scp lights jonb@192.168.40.249:/home/jonb/rsx/
 

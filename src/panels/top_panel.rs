@@ -6,8 +6,11 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
         // The top panel is often a good place for a menu bar:
         egui::menu::bar(ui, |ui| {
             ui.menu_button("File", |ui| {
-                if ui.button("Minimize").clicked() {
+                if ui.button("Minimize (Alt+W)").clicked() {
                     ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
+                }
+                if ui.button("Kiosk/FullScreen Alt+Q ONLY") {
+                    // do nothing
                 }
                 if ui.button("Quit").clicked() {
                     ctx.send_viewport_cmd(egui::ViewportCommand::Close);
