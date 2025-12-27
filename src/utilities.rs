@@ -77,7 +77,7 @@ pub fn shimmer_master(lights_app: &mut LightsApp) {
 
 pub fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
     // these magic numbers affect the UI layout only
-    if count % 4 == 0 && count < 16 && count > 0 {
+    if count == 0 || count == 4 || count == 10 || count == 20{
         ui.label("     ");
     }
     ui.add(

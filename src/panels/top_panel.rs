@@ -9,7 +9,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 if ui.button("Minimize (Alt+W)").clicked() {
                     ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
                 }
-                if ui.button("Kiosk/FullScreen Alt+Q ONLY") {
+                if ui.button("Kiosk/FullScreen Alt+Q ONLY").clicked() {
                     // do nothing
                 }
                 if ui.button("Quit").clicked() {
