@@ -1,6 +1,6 @@
 [package]
 name = "lights"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["Jon Beckett <sales@jbds.co.uk>"]
 edition = "2021"
 include = ["LICENSE-APACHE", "LICENSE-MIT", "**/*.rs", "Cargo.toml"]

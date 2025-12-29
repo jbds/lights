@@ -63,15 +63,15 @@ fn configure_text_styles(ctx: &egui::Context) {
 
 impl Default for LightsApp {
     fn default() -> Self {
-        let slider_count: usize = 21;
+        let slider_count: usize = 25;
         Self {
             slider_count: slider_count,
             // set all sliders to zero
             values: vec![0.0; slider_count],
             // make sure list has length equal to slider_count
             is_master_adjusteds: vec![
-                true, true, true, true, true, true, true, true, true, true, true, false, false,
-                false, false, false, false, false, false, false, false,
+                true, true, true, true, true, true, true, true, true, true, true, true, true,
+                true, false, false, false, false, false, false, false, false, false, false, false,
             ],
             // make sure list has length equal to slider_count
             labels: vec![
@@ -91,6 +91,10 @@ impl Default for LightsApp {
                 "W Wht".to_string(),
                 "S Amp".to_string(),
                 "S Frq".to_string(),
+                "Pan".to_string(),
+                "Tilt".to_string(),
+                "Zoom".to_string(),
+                "Mstr".to_string(),
                 "Red".to_string(),
                 "Grn".to_string(),
                 "Blu".to_string(),

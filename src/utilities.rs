@@ -13,6 +13,7 @@ pub fn recalculate_lights_adjusted_no_borrow(
         .iter()
         .enumerate()
         .map(|(i, &v)| {
+            // master slider is now at index 16
             if is_master_adjusteds[i] == true {
                 v * values[slider_count - 1] * f64::from(!is_blackout) / 255.0
             } else {
@@ -77,8 +78,10 @@ pub fn shimmer_master(lights_app: &mut LightsApp) {
 
 pub fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
     // these magic numbers affect the UI layout only
-    if count == 0 || count == 4 || count == 10 || count == 20{
+    if count == 0 || count == 4 || count == 10 || count == 14 || count == 16 || count == 20 {
         ui.label("     ");
+    } else {
+                ui.add_space(10.0);
     }
     ui.add(
         egui::Slider::new(&mut lights_app.values[count], 0.0..=255.0)

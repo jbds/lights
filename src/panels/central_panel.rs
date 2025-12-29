@@ -4,53 +4,62 @@ use crate::LightsApp;
 pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
     egui::CentralPanel::default().show(ctx, |ui| {
         //ui.label("central_panel_placeholder");
+        egui::ScrollArea::vertical().show(ui, |ui| {
 
-        //ui.label("");
-        ui.add_space(5.);
-        ui.horizontal(|ui| {
-            let _response = ui.add(
-                egui::TextEdit::singleline(&mut lights_app.short_text).desired_width(f32::INFINITY),
-            );
-        });
+            ui.add_space(5.);
+            ui.horizontal(|ui| {
+                let _response = ui.add(
+                    egui::TextEdit::singleline(&mut lights_app.short_text).desired_width(f32::INFINITY),
+                );
+            });
 
-        let mut count: usize = 0;
-        // set the 'width' (height) of the sliders
-        ui.spacing_mut().slider_width = 500.0;
+            let mut count: usize = 0;
+            // set the 'width' (height) of the sliders
+            ui.spacing_mut().slider_width = 500.0;
 
-        ui.label("");
-        // paint all sliders except last one
-        while count != (lights_app.slider_count - 1) {
-            let resp = utilities::get_slider(ui, lights_app, count);
-            if resp.changed() == true {
-                lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
-                    lights_app.values.clone(),
-                    lights_app.is_master_adjusteds.clone(),
-                    lights_app.slider_count,
-                    lights_app.is_blackout,
-                )
+            // slider rail height
+            ui.spacing_mut().slider_rail_height = 2.0;
+
+            ui.label("");
+            // paint all sliders 
+            while count < (lights_app.slider_count) {
+                if count != (lights_app.slider_count - 1) {
+
+                    let resp = utilities::get_slider(ui, lights_app, count);
+                    if resp.changed() == true {
+                        lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                            lights_app.values.clone(),
+                            lights_app.is_master_adjusteds.clone(),
+                            lights_app.slider_count,
+                            lights_app.is_blackout,
+                        )
+                    }
+
+                } else {
+
+                    // last slider, the master dimmer, is a special case UI layout
+                    ui.label("     ");
+                    let resp2 = ui.add(
+                        egui::Slider::new(
+                            &mut lights_app.values[count],
+                            0.0..=255.0,
+                        )
+                        .integer()
+                        .text("Master")
+                        //.orientation(egui::SliderOrientation::Vertical),
+                        .orientation(egui::SliderOrientation::Horizontal),
+                    );
+                    if resp2.changed() == true {
+                        lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                            lights_app.values.clone(),
+                            lights_app.is_master_adjusteds.clone(),
+                            lights_app.slider_count,
+                            lights_app.is_blackout,
+                        )
+                    }
+                }
+                count += 1;
             }
-            count += 1;
-        }
-
-        // last slider, the master dimmer, is a special case UI layout
-        ui.label("     ");
-        let resp2 = ui.add(
-            egui::Slider::new(
-                &mut lights_app.values[lights_app.slider_count - 1],
-                0.0..=255.0,
-            )
-            .integer()
-            .text("Master")
-            //.orientation(egui::SliderOrientation::Vertical),
-            .orientation(egui::SliderOrientation::Horizontal),
-        );
-        if resp2.changed() == true {
-            lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
-                lights_app.values.clone(),
-                lights_app.is_master_adjusteds.clone(),
-                lights_app.slider_count,
-                lights_app.is_blackout,
-            )
-        }
+        });
     });
 }
