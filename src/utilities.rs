@@ -78,7 +78,7 @@ pub fn shimmer_master(lights_app: &mut LightsApp) {
 
 pub fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
     // these magic numbers affect the UI layout only
-    if count == 0 || count == 4 || count == 10 || count == 14 || count == 16 || count == 20 {
+    if count == 0 || count == 4 || count == 10 || count == 14 || count == 16 || count == 24 {
         ui.label("     ");
     } else {
                 ui.add_space(10.0);
@@ -133,13 +133,13 @@ pub fn add_after_selected(lights_app: &mut LightsApp) {
     let _ = json_storage::write_to_file(&lights_app.light_records);
 }
 
-pub fn recalculate_ultra_violet(lights_app: &mut LightsApp) {
-    // uv ON OFF
-    for i in 20..=23 {
-        if lights_app.is_ultra_violet && !lights_app.is_blackout {
-            lights_app.array_of_u8[i] = 255;
-        } else {
-            lights_app.array_of_u8[i] = 0;
-        }
-    }
-}
+// pub fn recalculate_ultra_violet(lights_app: &mut LightsApp) {
+//     // uv ON OFF
+//     for i in 20..=23 {
+//         if lights_app.is_ultra_violet && !lights_app.is_blackout {
+//             lights_app.array_of_u8[i] = 255;
+//         } else {
+//             lights_app.array_of_u8[i] = 0;
+//         }
+//     }
+// }

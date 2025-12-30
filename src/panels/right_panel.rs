@@ -116,7 +116,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     lights_app.slider_count,
                     lights_app.is_blackout,
                 );
-                utilities::recalculate_ultra_violet(lights_app);
+                //utilities::recalculate_ultra_violet(lights_app);
             }
 
             ui.add_space(20.);
@@ -124,7 +124,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 .checkbox(&mut lights_app.is_ultra_violet, "Ultra Violet")
                 .clicked()
             {
-                utilities::recalculate_ultra_violet(lights_app);
+                //utilities::recalculate_ultra_violet(lights_app);
             }
 
             ui.label("");

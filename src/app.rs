@@ -149,7 +149,7 @@ impl LightsApp {
 
         let mut la: LightsApp = Default::default();
 
-        // although light_records_index is defaulted to zero, we still need o mimic a clicked() event
+        // although light_records_index is defaulted to zero, we still need to mimic a clicked() event
         // set current values to this selected lights_record
         let temp = la.light_records[0].clone();
         la.values = temp.1;
@@ -201,7 +201,7 @@ impl eframe::App for LightsApp {
             // }
             //const LENGTH_OF_U8: usize = 20;
             //let mut array_of_u8 = [0; LENGTH_OF_U8];
-            for i in 0..=19 {
+            for i in 0..self.slider_count - 1 {
                 self.array_of_u8[i] = self.values_adjusted[i] as u8;
             }
             // // uv ON OFF
