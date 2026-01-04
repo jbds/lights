@@ -6,36 +6,50 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
         .min_width(450.0)
         .show(ctx, |ui| {
             //ui.label("left_panel_placeholder");
-
+            // only seems to affect the 'Powered by' text!
+            //ui.style_mut().override_font_id = Some(egui::FontId::proportional(6.));
+            //ui.add(Label::new(RichText::new("Hello World").size(18.)).selectable(true));
+            // ui.scope(|ui|{
+            //     ui.visuals_mut().override_text_color = Some(egui::Color32::RED);
+            //     ui.style_mut().override_text_style = Some(egui::TextStyle::Small);
+            //     ui.label("I should be red");
+            // });
+            // ui.label("I should be default color");
             ui.add_space(10.);
             let mut i = 0;
-            for vals in lights_app.light_records.iter() {
-                // display all records
-                if ui
-                    .add(egui::SelectableLabel::new(
-                        i == lights_app.light_records_index,
-                        //format!("No:{} {:?}", i, &vals),
-                        &vals.0,
-                    ))
-                    .clicked()
-                {
-                    // show this record as selected
-                    lights_app.light_records_index = i;
-                    // set current values to this selected lights_record
-                    let temp = lights_app.light_records[lights_app.light_records_index].clone();
-                    lights_app.values = temp.1;
-                    // set scene desc to this selected record
-                    lights_app.short_text = temp.0;
-                    //qualify by master dimmer
-                    lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
-                        lights_app.values.clone(),
-                        lights_app.is_master_adjusteds.clone(),
-                        lights_app.slider_count,
-                        lights_app.is_blackout,
-                    )
+            ui.scope(|ui| {
+                // use the 'Small' text style for SelectableLabel text 
+                ui.style_mut().override_text_style = Some(egui::TextStyle::Small);
+
+                for vals in lights_app.light_records.iter() {
+                    // display all records
+                    if ui
+                        .add(egui::SelectableLabel::new(
+                            i == lights_app.light_records_index,
+                            //format!("No:{} {:?}", i, &vals),
+                            &vals.0, 
+                        ))
+                        .clicked()
+                    {
+                        // show this record as selected
+                        lights_app.light_records_index = i;
+                        // set current values to this selected lights_record
+                        let temp = lights_app.light_records[lights_app.light_records_index].clone();
+                        lights_app.values = temp.1;
+                        // set scene desc to this selected record
+                        lights_app.short_text = temp.0;
+                        //qualify by master dimmer
+                        lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                            lights_app.values.clone(),
+                            lights_app.is_master_adjusteds.clone(),
+                            lights_app.slider_count,
+                            lights_app.is_blackout,
+                        )
+                    }
+                    i += 1;
                 }
-                i += 1;
-            }
+
+            });
 
             // standard egui/eframe info
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {

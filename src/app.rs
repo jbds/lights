@@ -53,7 +53,7 @@ fn configure_text_styles(ctx: &egui::Context) {
     style.text_styles = [
         (Heading, FontId::new(30.0, Proportional)),
         (Body, FontId::new(14.0, Proportional)),
-        (Monospace, FontId::new(14.0, Proportional)),
+        (Monospace, FontId::new(10.0, Proportional)),
         (Button, FontId::new(16.0, Proportional)),
         (Small, FontId::new(14.0, Proportional)),
     ]
