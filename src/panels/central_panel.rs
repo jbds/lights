@@ -15,7 +15,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 
             let mut count: usize = 0;
             // set the 'width' (height) of the sliders
-            ui.spacing_mut().slider_width = 500.0;
+            ui.spacing_mut().slider_width = 550.0;
 
             // slider rail height
             ui.spacing_mut().slider_rail_height = 2.0;

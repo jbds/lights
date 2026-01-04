@@ -3,7 +3,7 @@ use crate::LightsApp;
 
 pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
     egui::SidePanel::left("left_panel")
-        .min_width(450.0)
+        .min_width(400.0)
         .show(ctx, |ui| {
             //ui.label("left_panel_placeholder");
             // only seems to affect the 'Powered by' text!
@@ -62,15 +62,20 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
     ui.horizontal(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
-        egui::warn_if_debug_build(ui);
-        ui.label(format!("    Lights v{}  ", env!("CARGO_PKG_VERSION")));
-        ui.label("Powered by ");
-        ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-        ui.label(" and ");
-        ui.hyperlink_to(
-            "eframe",
-            "https://github.com/emilk/egui/tree/master/crates/eframe",
-        );
-        ui.label(".");
+        ui.scope(|ui| {
+            // use the 'Monospace' text style for smaller text 
+            ui.style_mut().override_text_style = Some(egui::TextStyle::Monospace);
+
+            egui::warn_if_debug_build(ui);
+            ui.label(format!("    Lights v{}  ", env!("CARGO_PKG_VERSION")));
+            ui.label("Powered by ");
+            ui.hyperlink_to("egui", "https://github.com/emilk/egui");
+            ui.label(" and ");
+            ui.hyperlink_to(
+                "eframe",
+                "https://github.com/emilk/egui/tree/master/crates/eframe",
+            );
+            ui.label(".");
+        });
     });
 }

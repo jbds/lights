@@ -1,6 +1,6 @@
 [package]
 name = "lights"
-version = "0.2.7"
+version = "0.2.8"
 authors = ["Jon Beckett <sales@jbds.co.uk>"]
 edition = "2021"
 include = ["LICENSE-APACHE", "LICENSE-MIT", "**/*.rs", "Cargo.toml"]
@@ -11,8 +11,8 @@ all-features = true
 targets = ["x86_64-unknown-linux-gnu", "wasm32-unknown-unknown"]
 
 [dependencies]
-egui = "0.28"
-eframe = { version = "0.28", default-features = false, features = [
+egui = "=0.28.0"
+eframe = { version = "=0.28.0", default-features = false, features = [
     #"accesskit",     # Make egui compatible with screen readers. NOTE: adds a lot of dependencies.
     "default_fonts", # Embed the default egui fonts.
     "glow",          # Use the glow rendering backend. Alternative: "wgpu".
@@ -51,6 +51,32 @@ opt-level = 2
 
 
 [patch.crates-io]
+ecolor = { path = "../egui/crates/ecolor" }
+egui_demo_app = { path = "../egui/crates/egui_demo_app" }
+egui_demo_lib = { path = "../egui/crates/egui_demo_lib" }
+egui_extras = { path = "../egui/crates/egui_extras" }
+egui_glow = { path = "../egui/crates/egui_glow" }
+egui_plot = { path = "../egui/crates/egui_plot" }
+egui-wgpu = { path = "../egui/crates/egui-wgpu" }
+egui-winit = { path = "../egui/crates/egui-winit" }
+egui = { path = "../egui/crates/egui" }
+emath = { path = "../egui/crates/emath" }
+epaint = { path = "../egui/crates/epaint" }
+
+
+    # "crates/ecolor",
+    # "crates/egui_demo_app",
+    # "crates/egui_demo_lib",
+    # "crates/egui_extras",
+    # "crates/egui_glow",
+    # "crates/egui_plot",
+    # "crates/egui-wgpu",
+    # "crates/egui-winit",
+    # "crates/egui",
+    # "crates/emath",
+    # "crates/epaint",
+
+
 
 # If you want to use the bleeding edge version of egui and eframe:
 # egui = { git = "https://github.com/emilk/egui", branch = "master" }

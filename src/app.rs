@@ -53,7 +53,7 @@ fn configure_text_styles(ctx: &egui::Context) {
     style.text_styles = [
         (Heading, FontId::new(30.0, Proportional)),
         (Body, FontId::new(14.0, Proportional)),
-        (Monospace, FontId::new(10.0, Proportional)),
+        (Monospace, FontId::new(12.0, Proportional)),
         (Button, FontId::new(16.0, Proportional)),
         (Small, FontId::new(14.0, Proportional)),
     ]
@@ -204,10 +204,6 @@ impl eframe::App for LightsApp {
             for i in 0..self.slider_count - 1 {
                 self.array_of_u8[i] = self.values_adjusted[i] as u8;
             }
-            // // uv ON OFF
-            // for i in 20..=23 {
-            //     self.array_of_u8[i] = 0;
-            // }
             println!(
                 "dmx u8 {:?} {:?}",
                 &self.array_of_u8,
