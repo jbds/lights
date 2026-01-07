@@ -76,6 +76,11 @@ pub fn shimmer_master(lights_app: &mut LightsApp) {
     println!("{}", lights_app.values[lights_app.slider_count - 1]);
 }
 
+pub fn increment_strobe_a(lights_app: &mut LightsApp) {
+    let inc = 0.01;
+    lights_app.values[14] += inc;
+}
+
 pub fn get_slider(ui: &mut egui::Ui, lights_app: &mut LightsApp, count: usize) -> egui::Response {
     // these magic numbers affect the UI layout only
     if count == 4 || count == 10 || count == 14 || count == 16 || count == 24 {

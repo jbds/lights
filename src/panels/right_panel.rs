@@ -116,15 +116,20 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     lights_app.slider_count,
                     lights_app.is_blackout,
                 );
-                //utilities::recalculate_ultra_violet(lights_app);
             }
 
             ui.add_space(20.);
             if ui
-                .checkbox(&mut lights_app.is_ultra_violet, "Ultra Violet")
+                //.checkbox(&mut lights_app.is_ultra_violet, "Lightning Flashes")
+                .add_sized([170., 35.], egui::Button::new("Lightning Flashes"))
                 .clicked()
             {
-                //utilities::recalculate_ultra_violet(lights_app);
+                // set initial amplitude value to highish value
+                lights_app.values[14] = 200.0;
+                // set initial flash rate to around 2 per second
+                lights_app.values[15] = 10.0;
+                // start the incrementing
+                lights_app.is_strobe_a = true;
             }
 
             ui.label("");

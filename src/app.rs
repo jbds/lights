@@ -46,6 +46,8 @@ pub struct LightsApp {
     pub array_of_u8: [u8; 24],
     pub fader_speed: f64,
     pub is_ultra_violet: bool,
+    pub is_strobe_a: bool,
+    pub is_strobe_b: bool,
 }
 
 fn configure_text_styles(ctx: &egui::Context) {
@@ -129,6 +131,8 @@ impl Default for LightsApp {
             array_of_u8: [0; 24],
             fader_speed: 2.0,
             is_ultra_violet: false,
+            is_strobe_a: false,
+            is_strobe_b: false,
         }
     }
 }
@@ -252,6 +256,30 @@ impl eframe::App for LightsApp {
                 self.slider_count,
                 self.is_blackout,
             )
+        }
+
+        // increment strobe_a
+        if self.is_strobe_a == true && self.values[14] >= 200.5 {
+            // start second phase of lightning flash
+            // lesser amplitude, higher frequency
+            self.values[14] = 100.0;
+            self.values[15] = 20.0;
+        } else if self.is_strobe_a == true && self.values[14] >= 100.5 && self.values[14] < 150.0{
+            // finish
+            self.is_strobe_a = false;
+            self.values[14] = 0.0;
+            self.values[15] = 0.0;
+        } else if self.is_strobe_a == true {
+            // default case is to increment
+            utilities::increment_strobe_a(self);
+            self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                self.values.clone(),
+                self.is_master_adjusteds.clone(),
+                self.slider_count,
+                self.is_blackout,
+            )
+        } else {
+            // do nothing
         }
 
         // dialog confirmation
