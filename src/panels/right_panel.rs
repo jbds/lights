@@ -124,8 +124,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 .add_sized([170., 35.], egui::Button::new("Lightning Flashes"))
                 .clicked()
             {
-                // set initial amplitude value to highish value
-                lights_app.values[14] = 250.0;
+                // set initial amplitude value to high value
+                lights_app.values[14] = 254.0;
                 // set initial flash rate to around 2 per second
                 lights_app.values[15] = 190.0;
                 // start the incrementing

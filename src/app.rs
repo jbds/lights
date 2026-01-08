@@ -259,16 +259,27 @@ impl eframe::App for LightsApp {
         }
 
         // increment strobe_a
-        if self.is_strobe_a == true && self.values[14] >= 250.5 {
-            // start second phase of lightning flash
+        if self.is_strobe_a == true && self.values[14] >= 254.25 {
+            // start the dark phase
+            self.values[14] = 0.0;
+            self.values[15] = 255.0;
+        } else if self.is_strobe_a == true && self.values[14] >= 0.5 && self.values[14] < 105.0 {
+            // start next lightning flash
             // lesser amplitude, higher frequency
             self.values[14] = 190.0;
-            self.values[15] = 225.0;
-        } else if self.is_strobe_a == true && self.values[14] >= 190.5 && self.values[14] < 220.0{
+            //self.values[15] = 225.0;
+        } else if self.is_strobe_a == true && self.values[14] >= 190.25 && self.values[14] < 220.0{
             // finish
             self.is_strobe_a = false;
             self.values[14] = 0.0;
             self.values[15] = 0.0;
+            // need to update!
+            self.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
+                self.values.clone(),
+                self.is_master_adjusteds.clone(),
+                self.slider_count,
+                self.is_blackout,
+            )
         } else if self.is_strobe_a == true {
             // default case is to increment
             utilities::increment_strobe_a(self);
