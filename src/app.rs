@@ -259,12 +259,12 @@ impl eframe::App for LightsApp {
         }
 
         // increment strobe_a
-        if self.is_strobe_a == true && self.values[14] >= 200.5 {
+        if self.is_strobe_a == true && self.values[14] >= 250.5 {
             // start second phase of lightning flash
             // lesser amplitude, higher frequency
-            self.values[14] = 100.0;
-            self.values[15] = 20.0;
-        } else if self.is_strobe_a == true && self.values[14] >= 100.5 && self.values[14] < 150.0{
+            self.values[14] = 190.0;
+            self.values[15] = 225.0;
+        } else if self.is_strobe_a == true && self.values[14] >= 190.5 && self.values[14] < 220.0{
             // finish
             self.is_strobe_a = false;
             self.values[14] = 0.0;

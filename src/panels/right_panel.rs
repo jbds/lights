@@ -125,9 +125,9 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 .clicked()
             {
                 // set initial amplitude value to highish value
-                lights_app.values[14] = 200.0;
+                lights_app.values[14] = 250.0;
                 // set initial flash rate to around 2 per second
-                lights_app.values[15] = 10.0;
+                lights_app.values[15] = 190.0;
                 // start the incrementing
                 lights_app.is_strobe_a = true;
             }
