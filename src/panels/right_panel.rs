@@ -46,7 +46,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
             ui.add_space(10.);
             ui.horizontal(|ui| {
                 //if ui.button("   Up   ").clicked {
-                if ui.add_sized([81., 35.], egui::Button::new("Up")).clicked() {
+                if ui.add_sized([81., 35.], egui::Button::new("Prev 0")).clicked() {
                     // avoid subtract with overflow panic
                     if lights_app.light_records_index == 0 {
                         lights_app.light_records_index = lights_app.light_records.len() - 1;
@@ -58,6 +58,12 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     // set current values to this selected lights_record
                     (lights_app.short_text, lights_app.values) =
                         lights_app.light_records[lights_app.light_records_index].clone();
+
+                    // force no fade up or down, and then master to zero
+                    lights_app.is_fade_up = false;
+                    lights_app.is_fade_down = false;
+                    lights_app.values[lights_app.slider_count - 1] = 0.;
+                        
                     // sync adjusted values
                     lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                         lights_app.values.clone(),
@@ -67,9 +73,8 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     );
                 }
 
-                //if ui.button("Down").clicked {
                 if ui
-                    .add_sized([81., 35.], egui::Button::new("Down"))
+                    .add_sized([81., 35.], egui::Button::new("Next 0"))
                     .clicked()
                 {
                     // avoid add with overflow panic
@@ -83,6 +88,12 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                     // set current values to this selected lights_record
                     (lights_app.short_text, lights_app.values) =
                         lights_app.light_records[lights_app.light_records_index].clone();
+
+                    // force no fade up or down, and then master to zero
+                    lights_app.is_fade_up = false;
+                    lights_app.is_fade_down = false;
+                    lights_app.values[lights_app.slider_count - 1] = 0.;
+                        
                     // sync adjusted values
                     lights_app.values_adjusted = utilities::recalculate_lights_adjusted_no_borrow(
                         lights_app.values.clone(),
@@ -93,17 +104,31 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
                 }
             });
 
-            //ui.label("");
             ui.add_space(10.);
-            //if ui.button("Fade Up").clicked() {
-            if ui
-                .add_sized([170., 35.], egui::Button::new("Fade Up Fast"))
-                .clicked()
-            {
-                lights_app.fader_speed = 1.0;
-                lights_app.is_fade_down = false;
-                lights_app.is_fade_up = true;
-            }
+            ui.horizontal(|ui| {
+
+                if ui
+                    .add_sized([81., 35.], egui::Button::new("Up Slow"))
+                    .clicked()
+                {
+                    lights_app.fader_speed = 0.3;
+                    lights_app.is_fade_down = false;
+                    lights_app.is_fade_up = true;
+                }
+
+                //ui.add_space(10.);
+                if ui
+                    .add_sized([81., 35.], egui::Button::new("Up Fast"))
+                    .clicked()
+                {
+                    lights_app.fader_speed = 2.0;
+                    lights_app.is_fade_down = false;
+                    lights_app.is_fade_up = true;
+                }
+
+            });
+
+
 
             ui.label("");
             if ui
@@ -162,7 +187,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 
             ui.add_space(10.);
             if ui
-                .add_sized([170., 35.], egui::Button::new("Next Jump"))
+                .add_sized([170., 35.], egui::Button::new("Next Jump 255"))
                 .clicked()
             {
                 lights_app.light_records_index =
@@ -186,7 +211,7 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
 
             ui.add_space(10.);
             if ui
-                .add_sized([170., 35.], egui::Button::new("Previous Jump"))
+                .add_sized([170., 35.], egui::Button::new("Previous Jump 255"))
                 .clicked()
             {
                 // avoid subtract with overflow panic

@@ -10,3 +10,6 @@ To copy executable to raspi:
 jonb@ryzen7040:~/rs/lights/target/aarch64-unknown-linux-gnu/debug$ scp lights jonb@192.168.40.249:/home/jonb/rsx/
 (requires pwd E....5)
 
+To check raspian wifi credentials:
+nmtui
+
