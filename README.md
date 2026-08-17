@@ -13,3 +13,7 @@ jonb@ryzen7040:~/rs/lights/target/aarch64-unknown-linux-gnu/debug$ scp lights jo
 To check raspian wifi credentials:
 nmtui
 
+# Hardware spec
+Raspberry Pi 4 Model B  
+AB Electronics RS485 serial interface development board hard wired to DMX 3-pin female connector  
+5V 3A AC adapter
