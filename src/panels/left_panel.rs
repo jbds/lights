@@ -5,16 +5,6 @@ pub fn get_me(lights_app: &mut LightsApp, ctx: &egui::Context) {
     egui::SidePanel::left("left_panel")
         .min_width(400.0)
         .show(ctx, |ui| {
-            //ui.label("left_panel_placeholder");
-            // only seems to affect the 'Powered by' text!
-            //ui.style_mut().override_font_id = Some(egui::FontId::proportional(6.));
-            //ui.add(Label::new(RichText::new("Hello World").size(18.)).selectable(true));
-            // ui.scope(|ui|{
-            //     ui.visuals_mut().override_text_color = Some(egui::Color32::RED);
-            //     ui.style_mut().override_text_style = Some(egui::TextStyle::Small);
-            //     ui.label("I should be red");
-            // });
-            // ui.label("I should be default color");
             ui.add_space(10.);
             let mut i = 0;
             ui.scope(|ui| {
