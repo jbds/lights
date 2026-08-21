@@ -6,11 +6,11 @@ use crate::panels::top_panel;
 use crate::utilities;
 use crate::utilities::add_after_selected;
 use crate::utilities::{delete_selected, save_selected};
+use dmx_serial::posix::TTYPort;
 use egui::FontFamily::Proportional;
 use egui::FontId;
 use egui::TextStyle::*;
 use std::time::{Duration, Instant};
-//#[cfg(target_arch = "aarch64")]
 use dmx::{self, DmxTransmitter};
 
 
@@ -26,8 +26,7 @@ pub struct LightsApp {
     pub values_adjusted: Vec<f64>,
     pub instant: Instant,   // we need this to check timing
     pub duration: Duration, // ditto
-    //#[cfg(target_arch = "aarch64")]
-    pub dmx_port: dmx_serial::posix::TTYPort, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
+    pub dmx_port: Option<dmx_serial::posix::TTYPort>, //dmx_serial::Result<dmx_serial::posix::TTYPort>, // valid for life of the app
     pub light_records: Vec<(String, Vec<f64>)>, // a list of scene names plus all the slider values before any adjustment by the master slider and master alaways zero
     pub light_records_index: usize,             // initialized to zero
     pub is_fade_up: bool,
@@ -65,10 +64,6 @@ fn configure_text_styles(ctx: &egui::Context) {
 impl Default for LightsApp {
     fn default() -> Self {
         let slider_count: usize = 25;
-        #[cfg(target_arch = "x86_64")]
-        let serial_port_name = "/dev/ttyUSB0";
-        #[cfg(target_arch = "aarch64")]
-        let serial_port_name = "/dev/serial0"; 
         Self {
             slider_count: slider_count,
             // set all sliders to zero
@@ -111,7 +106,7 @@ impl Default for LightsApp {
             duration: Duration::from_secs(0), // store elapsed time on each screen repaint
             //#[cfg(target_arch = "aarch64")]
             //dmx_port: dmx::open_serial("/dev/serial0").unwrap(), // create the serial port
-            dmx_port: dmx::open_serial(serial_port_name).unwrap(), // create the serial port
+            dmx_port: get_dmx_port(),
             // light_records: vec![
             //     vec![0; slider_count],
             //     vec![128; slider_count],
@@ -139,7 +134,27 @@ impl Default for LightsApp {
             is_strobe_b: false,
         }
     }
+
+
 }
+
+fn get_dmx_port() -> Option<TTYPort> {
+    #[cfg(target_arch = "x86_64")]
+    let serial_port_name = "/dev/ttyUSB0";
+    //#[cfg(target_arch = "aarch64")]
+    //let serial_port_name = "/dev/serial0"; 
+    #[cfg(target_arch = "aarch64")]
+    let serial_port_name = "/dev/ttyUSB0"; 
+    let result = dmx::open_serial(serial_port_name);
+    match result {
+        Ok(pn) => Some(pn),
+        Err(e) => {
+            println!("Serial port '{}' is returning an error: '{}'", serial_port_name, e);
+            None
+        }
+    }
+}
+
 
 impl LightsApp {
     /// Called once before the first frame.
@@ -212,14 +227,21 @@ impl eframe::App for LightsApp {
             for i in 0..self.slider_count - 1 {
                 self.array_of_u8[i] = self.values_adjusted[i] as u8;
             }
-            println!(
-                "dmx u8 {:?} {:?}",
-                &self.array_of_u8,
-                &self.instant.elapsed()
-            );
             // send a dmx packet, &Vec<u8> can be coerced to &[u8]
             //#[cfg(target_arch = "aarch64")]
-            let _ = self.dmx_port.send_dmx_packet(&self.array_of_u8);
+            //let _ = self.dmx_port.send_dmx_packet(&self.array_of_u8);
+            //let _ = self.dmx_port.as_mut().unwrap().send_dmx_packet(&self.array_of_u8);
+            let _ = match self.dmx_port.as_mut() {
+                Some(pn) => {
+                    println!(
+                        "dmx u8 {:?} {:?}",
+                        &self.array_of_u8,
+                        &self.instant.elapsed()
+                    );
+                    pn.send_dmx_packet(&self.array_of_u8)
+                },
+                None => Ok(())
+            };
             self.duration = self.instant.elapsed();
         } else {
             // leave duration as is to accumulate time
